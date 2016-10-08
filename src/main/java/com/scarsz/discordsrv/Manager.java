@@ -54,7 +54,7 @@ public class Manager {
         }
 
         // shut down platform if JDA wasn't built
-        platform.disablePlugin();
+        if (jda == null) platform.disablePlugin();
     }
 
     /**
