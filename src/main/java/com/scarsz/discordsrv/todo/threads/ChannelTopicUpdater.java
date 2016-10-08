@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.todo.threads;
 
 import com.scarsz.discordsrv.Legacy;
 import com.scarsz.discordsrv.todo.objects.Lag;
-import com.scarsz.discordsrv.todo.util.MemUtil;
+import com.scarsz.discordsrv.util.MemUtil;
 import net.dv8tion.jda.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

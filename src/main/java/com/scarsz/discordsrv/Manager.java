@@ -1,6 +1,7 @@
 package com.scarsz.discordsrv;
 
 import com.scarsz.discordsrv.events.PlatformChatEvent;
+import com.scarsz.discordsrv.objects.ChatProcessResult;
 import com.scarsz.discordsrv.objects.IPlatform;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
@@ -14,7 +15,7 @@ public class Manager {
     public JDA jda = null;
     public HashMap<String, Object> config = new HashMap<>();
 
-    private IPlatform platform;
+    private final IPlatform platform;
 
     public Manager(IPlatform platform) {
         this.platform = platform;
@@ -58,10 +59,12 @@ public class Manager {
 
     /**
      * Process the given chat event for delivery to Discord
-     * @return whether or not the chat was successfully processed
+     * @return result of processing the given PlatformChatEvent
+     * @see PlatformChatEvent
+     * @see ChatProcessResult
      */
-    public boolean processChatEvent(PlatformChatEvent event) {
-        return true;
+    public ChatProcessResult processChatEvent(PlatformChatEvent event) {
+        return new ChatProcessResult();
     }
 
     public int configGetInt(String key) {

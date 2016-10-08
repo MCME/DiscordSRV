@@ -2,7 +2,7 @@ package com.scarsz.discordsrv.todo.listeners;
 
 import com.scarsz.discordsrv.Legacy;
 import com.scarsz.discordsrv.todo.objects.SingleCommandSender;
-import com.scarsz.discordsrv.todo.util.DebugHandler;
+import com.scarsz.discordsrv.util.DebugHandler;
 import net.dv8tion.jda.Permission;
 import net.dv8tion.jda.entities.Role;
 import net.dv8tion.jda.entities.User;

@@ -1,4 +1,4 @@
-package com.scarsz.discordsrv.todo.util;
+package com.scarsz.discordsrv.util;
 
 import com.scarsz.discordsrv.Legacy;
 import net.dv8tion.jda.Permission;
