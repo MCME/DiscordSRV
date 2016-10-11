@@ -4,12 +4,13 @@ public interface IPlatform {
 
     /**
      * Disable the platform through the platform's manager
+     * @return whether or not the platform supported disabling itself
      */
-    void disablePlugin();
+    boolean disablePlatform();
 
     /**
      * Loads the platform-dependant config to the Manager's config
      */
-    void loadConfig();
+    void loadConfigToManager();
 
 }

@@ -4,7 +4,7 @@ description: The most powerful, configurable, open-source Discord bridge plugin 
 author: Scarsz
 website: https://github.com/Scarsz/DiscordSRV
 
-main: com.scarsz.discordsrv.platforms.BukkitPlatform
+main: com.scarsz.discordsrv.platforms.bukkit.BukkitPlatform
 database: false
 softdepend: [HeroChat, Legendchat, LunaChat, Multiverse-Core, TownyChat, Vault, VentureChat]
 #load: STARTUP

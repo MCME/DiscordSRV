@@ -1,6 +1,8 @@
 package com.scarsz.discordsrv.events;
 
 public class PlatformChatEvent {
+
+    public String channel;
     public String playerName;
     public String message;
     public String displayName;
@@ -8,4 +10,5 @@ public class PlatformChatEvent {
     public String eventName;
     public String world;
     public String priority;
+
 }

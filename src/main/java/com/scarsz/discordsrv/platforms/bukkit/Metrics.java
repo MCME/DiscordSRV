@@ -25,7 +25,7 @@
  * authors and contributors and should not be interpreted as representing official policies,
  * either expressed or implied, of anybody else.
  */
-package com.scarsz.discordsrv.todo.objects;
+package com.scarsz.discordsrv.platforms.bukkit;
 
 import com.scarsz.discordsrv.Legacy;
 import org.bukkit.Bukkit;
@@ -197,7 +197,7 @@ public class Metrics {
 
                 public void run() {
                     try {
-                        // This has to be synchronized or it can collide with the disable method.
+                        // This has to be synchronized or it can collide with the disablePlatform method.
                         synchronized (optOutLock) {
                             // Disable Task, if it is running and the server owner decided to opt-out
                             if (isOptOut() && task != null) {

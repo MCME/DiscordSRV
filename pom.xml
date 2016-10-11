@@ -8,8 +8,8 @@
 
     <licenses>
         <license>
-            <name>Apache License, Version 2.0</name>
-            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <name>GNU General Public License v3</name>
+            <url>https://www.gnu.org/licenses/gpl.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
@@ -20,8 +20,8 @@
     </issueManagement>
 
     <scm>
-  	<connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
-	<url>https://github.com/Scarsz/DiscordSRV/</url>
+        <connection>scm:git:https://github.com/Scarsz/DiscordSRV.git</connection>
+        <url>https://github.com/Scarsz/DiscordSRV/</url>
     </scm>
 
     <build>
@@ -127,10 +127,22 @@
             <id>Androkai</id>
             <url>https://repo.androkai.net/minecraft</url>
         </repository>-->
+        <repository>
+            <id>bungeecord-repo</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </repository>
     </repositories>
 
     <dependencies>
-        <!-- bukkit -->
+        <!-- jda -->
+        <dependency>
+            <groupId>net.dv8tion</groupId>
+            <artifactId>JDA</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- bukkit api -->
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
@@ -138,12 +150,20 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- jda -->
+        <!-- bungeecord api -->
         <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>RELEASE</version>
-            <scope>compile</scope>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.10-SNAPSHOT</version>
+            <type>jar</type>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.md-5</groupId>
+            <artifactId>bungeecord-api</artifactId>
+            <version>1.10-SNAPSHOT</version>
+            <type>javadoc</type>
+            <scope>provided</scope>
         </dependency>
 
         <!-- asm -->

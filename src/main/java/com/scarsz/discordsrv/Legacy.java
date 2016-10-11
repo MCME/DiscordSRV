@@ -4,6 +4,7 @@ import com.google.common.io.Files;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
+import com.scarsz.discordsrv.platforms.bukkit.Metrics;
 import com.scarsz.discordsrv.todo.api.DiscordSRVListenerInterface;
 import com.scarsz.discordsrv.todo.api.events.ProcessChatEvent;
 import com.scarsz.discordsrv.todo.hooks.chat.*;
@@ -231,6 +232,7 @@ public class Legacy extends JavaPlugin {
             }
         }
 
+        //TODO: move to rewrite
         if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
         try {
             for (ChannelInfo<String, String> channel : (List<ChannelInfo<String, String>>) gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<ChannelInfo<String, String>>>(){}.getType())) {
