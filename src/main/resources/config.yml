@@ -8,7 +8,7 @@ BotToken: "BOTTOKEN"
 # Don't touch this unless you have a chat channel plugin
 DiscordMainChatChannel: "global"
 
-# Console channel numerical ID (NOT NAME), leave blank to disablePlatform the console channel all together
+# Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
 DiscordConsoleChannelId: "NUMERICALCHANNELID"
 
 # Debug options, don't touch unless needed
@@ -33,7 +33,7 @@ LunaChatHook: true
 TownyChatHook: true
 VentureChatHook: true
 
-# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disablePlatform
+# Game information, this sets the "Playing ______" indicator for the bot, set to "" to disable
 DiscordGameStatus: "Minecraft"
 
 # Chat channel information
@@ -122,7 +122,7 @@ MinecraftChatToDiscordMessageFormatNoPrimaryGroup: "%displayname%: %message%"
 # DiscordChatChannelConsoleCommandWhitelist: list of commands that are able to be ran with DiscordChatChannelConsoleCommandPrefix
 # DiscordChatChannelConsoleCommandWhitelistBypassRoles: list of roles that bypass the whitelist
 # DiscordChatChannelConsoleCommandWhitelistActsAsBlacklist: should the command whitelist act as a blacklist instead
-# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disablePlatform expiration.
+# DiscordChatChannelConsoleCommandExpiration: time in seconds until a sent command output is automatically removed by the bot. set to 0 to disable expiration.
 # DiscordChatChannelConsoleCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally issued the command
 #
 DiscordChatChannelConsoleCommandEnabled: true
@@ -154,7 +154,7 @@ DiscordChatChannelServerShutdownMessage: "**Server has stopped**"
 # DiscordChatChannelListCommandMessage: the command people can type to get the player list
 # DiscordChatChannelListCommandFormatOnlinePlayers: the message at the beginning of the list (%playercount% will show the current player count)
 # DiscordChatChannelListCommandFormatNoOnlinePlayers: "*No online players*"
-# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disablePlatform expiration.
+# DiscordChatChannelListCommandExpiration: time in seconds until a sent player list message is automatically removed by the bot. set to 0 to disable expiration.
 # DiscordChatChannelListCommandExpirationDeleteRequest: whether or not to delete the message of the person that originally requested for the player list
 #
 DiscordChatChannelListCommandEnabled: true
@@ -206,7 +206,7 @@ MinecraftPlayerAchievementMessagesFormat: "**%displayname% earned achievement %a
 
 # Channel topic updater
 # This is all the stuff related to automatically updating the chat or console channel's topics with server information
-# To disablePlatform one of the formats, make the value completely blank, i.e. ""
+# To disable one of the formats, make the value completely blank, i.e. ""
 #
 # ChannelTopicUpdaterChatChannelTopicFormat and ChannelTopicUpdaterConsoleChannelTopicFormat have the same available formatters
 # %playercount% = current player count
@@ -244,7 +244,7 @@ DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisinthe
 
 # Discord channel purge command
 # This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in.
-# To disablePlatform purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
+# To disable purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
 # Use this very wisely.
 #
 # DiscordChannelPurgeCommand: the exact message that will trigger the purge.
