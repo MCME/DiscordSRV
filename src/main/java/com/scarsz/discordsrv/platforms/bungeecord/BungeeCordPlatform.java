@@ -31,7 +31,7 @@ public class BungeeCordPlatform extends Plugin implements IPlatform, Listener {
         return false;
     }
     public void loadConfigToManager() {
-//        reloadConfig(); getConfig().getValues(true).forEach((k, v) -> manager.config.put(k, v));
+        //reloadConfig(); getConfig().getValues(true).forEach((k, v) -> manager.config.put(k, v));
         File configFile = new File(getDataFolder(), "config.yml");
         if (!configFile.exists()) {
             try {
@@ -43,6 +43,15 @@ public class BungeeCordPlatform extends Plugin implements IPlatform, Listener {
                 e.printStackTrace();
             }
         }
+    }
+    public void info(String message) {
+        getLogger().info(message);
+    }
+    public void warning(String message) {
+        getLogger().warning(message);
+    }
+    public void severe(String message) {
+        getLogger().severe(message);
     }
     //</editor-fold>
 

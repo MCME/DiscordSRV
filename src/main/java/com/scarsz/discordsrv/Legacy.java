@@ -51,7 +51,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
 import java.util.*;
 
-@SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions"})
+@SuppressWarnings({"Convert2streamapi", "unused", "unchecked", "ResultOfMethodCallIgnored", "WeakerAccess", "ConstantConditions", "Duplicates"})
 public class Legacy extends JavaPlugin {
 
     // snapshot id
@@ -263,8 +263,8 @@ public class Legacy extends JavaPlugin {
         }
 
         // send startup message if enabled
-        if (plugin.getConfig().getBoolean("DiscordChatChannelServerStartupMessageEnabled"))
-            sendMessage(chatChannel, Legacy.plugin.getConfig().getString("DiscordChatChannelServerStartupMessage"));
+        if (getConfig().getBoolean("DiscordChatChannelServerStartupMessageEnabled"))
+            sendMessage(chatChannel, getConfig().getString("DiscordChatChannelServerStartupMessage"));
 
         // in-game chat events
         if (checkIfPluginEnabled("herochat") && getConfig().getBoolean("HeroChatHook")) {
@@ -419,6 +419,7 @@ public class Legacy extends JavaPlugin {
             e.printStackTrace();
         }
     }
+    //TODO: do all this disable shit
     public void onDisable() {
         // close cancellationDetector cause reasons
         cancellationDetector.close();

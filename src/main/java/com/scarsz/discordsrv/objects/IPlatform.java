@@ -13,4 +13,8 @@ public interface IPlatform {
      */
     void loadConfigToManager();
 
+    void info(String message);
+    void warning(String message);
+    void severe(String message);
+
 }

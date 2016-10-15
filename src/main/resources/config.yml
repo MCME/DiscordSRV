@@ -70,7 +70,7 @@ DiscordChatChannelBroadcastDiscordMessagesToConsole: true
 #
 # DiscordConsoleChannelFormat: the format used when sending a line from the console. Only applies to non-legacy console streaming engine.
 # %date% = current date & time
-# %level% = message level (info/warn/error)
+# %level% = message level (info/warning/error)
 # %line% = line from the console
 #
 DiscordConsoleChannelLogRefreshRate: 5000
@@ -81,7 +81,7 @@ DiscordConsoleChannelDoNotSendPhrasesActsAsWhitelist: false
 DiscordConsoleChannelDoNotSendPhrases: ["Async Chat Thread"]
 DiscordConsoleChannelRegexFilter: ""
 DiscordConsoleChannelRegexReplacement: ""
-DiscordConsoleChannelLevels: ["info", "warn", "error"]
+DiscordConsoleChannelLevels: ["info", "warning", "error"]
 DiscordConsoleChannelFormat: "[%date% %level%] %line%"
 
 # Minecraft <-> Discord formatting information
