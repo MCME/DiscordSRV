@@ -409,7 +409,10 @@ public class Legacy extends JavaPlugin {
                 String line = br.readLine();
                 if (line == null) done = true;
                 if (line != null && line.startsWith(key)) {
-                    ((Map<String, Object>) new Yaml().load(line.substring(key.length() + 1))).forEach((s, o) -> responses.put(s, String.valueOf(o)));
+                    ((Map<String, Object>) new Yaml().load(line.substring(key.length() + 1))).forEach((s, o) -> {
+                        if (getConfig().getBoolean("DiscordCannedResponsesTriggersAreCaseInsensitive")) s = s.toLowerCase();
+                        responses.put(s, (String) o);
+                    });
                 }
             }
         } catch (IOException e) {

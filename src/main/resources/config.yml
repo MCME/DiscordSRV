@@ -260,3 +260,4 @@ DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 #
 DiscordCannedResponses: {"!ip": "yourserveripchange.me", "!site": "http://yoursiteurl.net"}
+DiscordCannedResponsesTriggersAreCaseInsensitive: true
