@@ -56,7 +56,7 @@ public class Manager {
 
     // iterable misc variables
     public final Map<String, String> colors = new HashMap<>();
-    private final List<String> consoleMessageQueue = new LinkedList<>();
+    public final List<String> consoleMessageQueue = new LinkedList<>();
     public final Map<String, String> responses = new HashMap<>();
     public final List<String> unsubscribedPlayers = new ArrayList<>();
 
@@ -162,13 +162,23 @@ public class Manager {
     }
 
     //<editor-fold desc="Utilities">
-    private void sendMessage(TextChannel channel, String message) {
-        //TODO: move over
+    public void debug(String message) {
+        platform.info("[DEBUG @ " + String.valueOf(Thread.currentThread().getStackTrace()[2]) + "] " + message);
     }
     private TextChannel getTextChannelFromChannelName(String inGameChannelName) {
         for (Map.Entry<String, TextChannel> linkedChannel : channels.entrySet())
             if (linkedChannel.getKey().equals(inGameChannelName)) return linkedChannel.getValue();
         return null;
+    }
+    public void sendMessage(TextChannel channel, String message) {
+        if (jda == null) {
+            debug("JDA null");
+            return;
+        }
+        if (channel == null) {
+            debug("Channel null");
+        }
+        //debug("yeah hi");
     }
     //</editor-fold>
 

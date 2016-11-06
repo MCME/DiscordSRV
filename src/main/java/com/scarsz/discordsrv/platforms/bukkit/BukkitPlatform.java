@@ -2,7 +2,6 @@ package com.scarsz.discordsrv.platforms.bukkit;
 
 import com.google.common.io.Files;
 import com.google.gson.internal.LinkedTreeMap;
-import com.scarsz.discordsrv.Legacy;
 import com.scarsz.discordsrv.Manager;
 import com.scarsz.discordsrv.events.PlatformChatEvent;
 import com.scarsz.discordsrv.events.results.PlatformChatProcessResult;
@@ -38,20 +37,19 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.util.*;
 
-import static com.scarsz.discordsrv.Legacy.colors;
-import static com.scarsz.discordsrv.Legacy.jda;
-import static com.scarsz.discordsrv.Legacy.notifyListeners;
-
 @SuppressWarnings({"Duplicates", "unchecked"})
 public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
 
-    public Manager manager = new Manager(this);
+    private Manager manager = new Manager(this);
+    public static Plugin plugin;
 
     private CancellationDetector<AsyncPlayerChatEvent> cancellationDetector = new CancellationDetector<>(AsyncPlayerChatEvent.class);
     private boolean canUsePingNotificationSounds = false;
 
     //<editor-fold desc="JavaPlugin overrides">
     public void onEnable() {
+        plugin = this;
+
         Bukkit.getPluginManager().registerEvents(this, this);
         loadConfigToManager();
 
@@ -192,7 +190,6 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
         //<editor-fold desc="TPS poller">
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
         //</editor-fold>
-
         //<editor-fold desc="channel topic updater">
         if (manager.channelTopicUpdater == null) {
             manager.channelTopicUpdater = new ChannelTopicUpdater();
@@ -269,7 +266,7 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
                 key = key.toLowerCase();
                 manager.colors.put(key, definition);
             }
-            getLogger().info("Colors: " + colors);
+            getLogger().info("Colors: " + manager.colors);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -287,12 +284,12 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
 
         //TODO: new api
         // super listener for all discord events
-        jda.addEventListener(new ListenerAdapter() {
+        manager.jda.addEventListener(new ListenerAdapter() {
             public void onEvent(Event event) {
                 // don't notify of message receiving events, that's handled in the normal message listener
                 if (event.getClass().getName().contains("MessageReceived")) return;
 
-                notifyListeners(event);
+                //notifyListeners(event);
             }
         });
 
@@ -306,7 +303,7 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
             manager.responses.clear();
             String key = "DiscordCannedResponses";
 
-            FileReader fr = new FileReader(new File(Legacy.plugin.getDataFolder(), "config.yml"));
+            FileReader fr = new FileReader(new File(getDataFolder(), "config.yml"));
             BufferedReader br = new BufferedReader(fr);
             boolean done = false;
             while (!done) {
@@ -335,7 +332,8 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
         return true;
     }
     public void loadConfigToManager() {
-        reloadConfig(); getConfig().getValues(true).forEach((k, v) -> manager.config.put(k, v));
+        reloadConfig();
+        getConfig().getValues(true).forEach((k, v) -> manager.config.put(k, v));
     }
     public void info(String message) {
         getLogger().info(message);
@@ -375,10 +373,10 @@ public class BukkitPlatform extends JavaPlugin implements IPlatform, Listener {
     //</editor-fold>
 
     //<editor-fold desc="Utilities">
-    private Plugin getPlugin(String pluginName) {
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (plugin.getName().toLowerCase().trim().equals(pluginName.toLowerCase().trim())) return plugin;
-        }
+    private static Plugin getPlugin(String pluginName) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
+            if (plugin.getName().toLowerCase().trim().equals(pluginName.toLowerCase().trim()))
+                return plugin;
         return null;
     }
     //</editor-fold>

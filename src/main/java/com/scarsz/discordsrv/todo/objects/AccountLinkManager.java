@@ -2,6 +2,7 @@ package com.scarsz.discordsrv.todo.objects;
 
 import com.google.gson.internal.LinkedTreeMap;
 import com.scarsz.discordsrv.Legacy;
+import com.scarsz.discordsrv.platforms.bukkit.BukkitPlatform;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class AccountLinkManager implements Listener {
 
-    private File linkFile = new File(Legacy.plugin.getDataFolder(), "linkedaccounts.json");
+    private File linkFile = new File(BukkitPlatform.plugin.getDataFolder(), "linkedaccounts.json");
 
     private HashMap<UUID, String> linkedAccounts = new HashMap<>();
 
