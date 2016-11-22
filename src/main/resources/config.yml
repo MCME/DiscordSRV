@@ -183,7 +183,7 @@ MinecraftPlayerLeaveMessageFormat: "**%displayname% left the server**"
 
 # Player death messages
 # MinecraftPlayerDeathMessageEnabled: Whether or not to send death messages to the main chat channel
-# 
+#
 # MinecraftPlayerDeathMessageFormat: the format used when sending death messages from Minecraft to Discord
 # %displayname% = display name from things like nicknames
 # %username% = raw player username
