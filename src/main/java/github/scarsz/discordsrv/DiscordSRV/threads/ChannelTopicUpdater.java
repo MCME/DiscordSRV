@@ -2,7 +2,6 @@ package github.scarsz.discordsrv.DiscordSRV.threads;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
-import github.scarsz.discordsrv.DiscordSRV.util.JDAUtil;
 import github.scarsz.discordsrv.DiscordSRV.util.MemUtil;
 import net.dv8tion.jda.core.Permission;
 
@@ -35,15 +34,15 @@ public class ChannelTopicUpdater extends Thread {
                 if ((Manager.instance.chatChannel == null && Manager.instance.consoleChannel == null) || (chatTopic.isEmpty() && consoleTopic.isEmpty())) interrupt();
                 if (Manager.instance.jda == null || Manager.instance.jda.getSelfUser() == null) continue;
 
-                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && !JDAUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
+                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && !DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
                     Manager.instance.platform.warning("Unable to update chat channel; no permission to manage channel");
-                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && !JDAUtil.checkPermission(Manager.instance.consoleChannel, Permission.MANAGE_CHANNEL))
+                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && !DiscordUtil.checkPermission(Manager.instance.consoleChannel, Permission.MANAGE_CHANNEL))
                     Manager.instance.platform.warning("Unable to update console channel; no permission to manage channel");
 
-                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && JDAUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
-                    JDAUtil.setTextChannelTopic(Manager.instance.chatChannel, chatTopic);
-                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && JDAUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
-                    JDAUtil.setTextChannelTopic(Manager.instance.consoleChannel, consoleTopic);
+                if (!chatTopic.isEmpty() && Manager.instance.chatChannel != null && DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
+                    DiscordUtil.setTextChannelTopic(Manager.instance.chatChannel, chatTopic);
+                if (!consoleTopic.isEmpty() && Manager.instance.consoleChannel != null && DiscordUtil.checkPermission(Manager.instance.chatChannel, Permission.MANAGE_CHANNEL))
+                    DiscordUtil.setTextChannelTopic(Manager.instance.consoleChannel, consoleTopic);
             } catch (NullPointerException ignored) {}
 
             try { Thread.sleep(rate); } catch (InterruptedException ignored) {}

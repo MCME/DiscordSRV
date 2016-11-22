@@ -8,13 +8,15 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 /**
  * Made by Scarsz
  *
  * @in /dev/hell
- * @at 11/7/2016
+ * @on 11/7/2016
+ * @at 1:59 AM
  */
 public class DiscordUtil {
 
@@ -127,11 +129,11 @@ public class DiscordUtil {
     public static void sendMessage(TextChannel channel, String message, int expiration) {
         if (channel == null ||
                 channel.getJDA() == null ||
-                !JDAUtil.checkPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_READ) ||
-                !JDAUtil.checkPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_WRITE))
+                !checkPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_READ) ||
+                !checkPermission(channel, channel.getJDA().getSelfUser(), Permission.MESSAGE_WRITE))
             return;
 
-        message = ColorUtil.stripColor(message);
+        message = DiscordUtil.stripColor(message);
 
         String overflow = null;
         if (message.length() > 2000) {
@@ -140,13 +142,47 @@ public class DiscordUtil {
             message = message.substring(0, 2000);
         }
 
-        JDAUtil.queueMessage(channel, message, m -> {
-            if (expiration > 0 && JDAUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
+        queueMessage(channel, message, m -> {
+            if (expiration > 0 && checkPermission(channel, Permission.MESSAGE_MANAGE)) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-                if (JDAUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.instance.platform.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+                if (checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.instance.platform.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration);
+    }
+
+    public static boolean checkPermission(Channel channel, Permission permission) {
+        return checkPermission(channel, channel.getJDA().getSelfUser(), permission);
+    }
+    public static boolean checkPermission(Channel channel, User user, Permission permission) {
+        return channel.getGuild().getMember(user).hasPermission(channel, permission);
+    }
+
+    public static Message blockMessage(TextChannel channel, String message) {
+        try {
+            return channel.sendMessage(message).block();
+        } catch (RateLimitedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static Message blockMessage(TextChannel channel, Message message) {
+        try {
+            return channel.sendMessage(message).block();
+        } catch (RateLimitedException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
+        channel.sendMessage(message).queue(consumer);
+    }
+    public static void queueMessage(TextChannel channel, Message message, Consumer<Message> consumer) {
+        channel.sendMessage(message).queue(consumer);
+    }
+
+    public static void setTextChannelTopic(TextChannel channel, String topic) {
+        channel.getManager().setTopic(topic).queue();
     }
 
 }

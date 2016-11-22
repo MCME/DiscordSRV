@@ -23,4 +23,5 @@ public abstract class GameChatMessageEvent {
     public String getMessage() {
         return message;
     }
+
 }
