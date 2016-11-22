@@ -9,7 +9,7 @@ import github.scarsz.discordsrv.DiscordSRV.api.events.*;
  * @at 11/7/2016
  */
 @SuppressWarnings("unused")
-public class DiscordSRVListener {
+public abstract class DiscordSRVListener {
 
     /**
      * Called directly before processing a received chat message from Discord

@@ -13,6 +13,7 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
 import java.text.DecimalFormat;
@@ -61,6 +62,30 @@ public class Manager {
 
         // shutdown JDA if it was already running (plugin reload? 🤦)
         if (jda != null) jda.shutdown(false);
+
+
+        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
+        SimpleLog.addListener(new SimpleLog.LogListener() {
+            @Override
+            public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
+                switch (level) {
+                    case INFO:
+                        platform.info("[JDA] " + o);
+                        break;
+                    case WARNING:
+                        platform.warning("[JDA] " + o);
+                        break;
+                    case FATAL:
+                        platform.severe("[JDA] " + o);
+                        break;
+                    default:
+                        platform.info("[JDA " + level.name().toUpperCase() + "] " + o);
+                        break;
+                }
+            }
+            @Override
+            public void onError(SimpleLog simpleLog, Throwable throwable) {}
+        });
 
         // build JDA
         try {
