@@ -18,7 +18,6 @@ DontSendCanceledChatEvents: true
 EventDebug: false
 LegacyConsoleChannelEngine: false
 PlayerVanishLookupReporting: false
-PrintTiming: false
 ReportCanceledChatEvents: false
 UseOldConsoleCommandSender: false
 

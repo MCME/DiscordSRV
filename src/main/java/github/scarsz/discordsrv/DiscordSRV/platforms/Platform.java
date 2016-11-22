@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Made by Scarsz
@@ -17,6 +18,37 @@ public interface Platform {
     File getPluginConfigFile();
 
     /**
+     * Query for the platform's maximum player count
+     * @return integer representing the platform's maximum player count
+     */
+    int queryMaxPlayers();
+    /**
+     * Query for the platform's Motto of the Day (MOTD)
+     * @return String containing the server software version
+     */
+    String queryMotd();
+    /**
+     * TODO
+     * @return
+     */
+    List<String> queryOnlinePlayers();
+    /**
+     * Query for the platform's server software version
+     * @return String containing the server software version
+     */
+    String queryServerVersion();
+    /**
+     * TODO
+     * @return
+     */
+    int queryTotalPlayers();
+    /**
+     * TODO
+     * @return
+     */
+    String queryTps();
+
+    /**
      * Trigger an info message on the platform's logger
      * @param message the message to be triggered
      */
@@ -31,5 +63,6 @@ public interface Platform {
      * @param message the message to be triggered
      */
     void severe(String message);
+
 
 }

@@ -8,6 +8,7 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Made by Scarsz
@@ -68,7 +69,7 @@ public class DiscordUtil {
             String message = "I was told to purge the current channel but I don't have the `Manage Messages` permission.";
             if (channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(channel, Permission.MESSAGE_WRITE))
                 channel.sendMessage(message).queue();
-            else Manager.platform.warning(message);
+            else Manager.instance.platform.warning(message);
             return -1;
         }
 
@@ -99,6 +100,16 @@ public class DiscordUtil {
     }
 
     /**
+     * Strip the given String of Minecraft coloring. Useful for sending things to Discord.
+     * @param text the given String to strip colors from
+     * @return the given String with coloring stripped
+     */
+    public static String stripColor(String text) {
+        return text == null ? null : stripColorPattern.matcher(text).replaceAll("");
+    }
+    private static final Pattern stripColorPattern = Pattern.compile("(?i)" + String.valueOf('§') + "[0-9A-FK-OR]");
+
+    /**
      * Send the given String message to the given TextChannel
      * @param channel
      * @param message
@@ -124,7 +135,7 @@ public class DiscordUtil {
 
         String overflow = null;
         if (message.length() > 2000) {
-            Manager.platform.warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
+            Manager.instance.platform.warning("Tried sending message with length of " + message.length() + " (" + (message.length() - 2000) + " over limit)");
             overflow = message.substring(2000);
             message = message.substring(0, 2000);
         }
@@ -132,7 +143,7 @@ public class DiscordUtil {
         JDAUtil.queueMessage(channel, message, m -> {
             if (expiration > 0 && JDAUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
                 try { Thread.sleep(expiration); } catch (InterruptedException e) { e.printStackTrace(); }
-                if (JDAUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.platform.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
+                if (JDAUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) m.deleteMessage().queue(); else Manager.instance.platform.warning("Could not delete message in channel " + channel + ", no permission to manage messages");
             }
         });
         if (overflow != null) sendMessage(channel, overflow, expiration);

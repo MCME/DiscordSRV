@@ -4,6 +4,7 @@ import com.google.inject.Inject;
 import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import org.slf4j.Logger;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.api.entity.living.player.Player;
 import org.spongepowered.api.event.Listener;
 import org.spongepowered.api.event.filter.Getter;
@@ -48,4 +49,8 @@ public abstract class SpongePlatform implements Platform {
         player.sendMessage(Text.of(TextColors.AQUA, TextStyles.BOLD, "Hi " + player.getName()));
     }
 
+    @Override
+    public String queryTps() {
+        return Manager.decimalFormat.format(Sponge.getServer().getTicksPerSecond());
+    }
 }

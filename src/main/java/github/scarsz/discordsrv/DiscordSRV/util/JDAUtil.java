@@ -50,4 +50,8 @@ public class JDAUtil {
         channel.sendMessage(message).queue(consumer);
     }
 
+    public static void setTextChannelTopic(TextChannel channel, String topic) {
+        channel.getManager().setTopic(topic).queue();
+    }
+
 }

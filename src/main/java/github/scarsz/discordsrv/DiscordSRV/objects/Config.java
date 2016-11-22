@@ -1,9 +1,13 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
+import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.util.ResourceUtil;
+import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +18,7 @@ import java.util.Map;
  * @in /dev/hell
  * @at 11/7/2016
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public class Config {
 
     public Config() {
@@ -31,7 +35,11 @@ public class Config {
 
     public void save() {
         if (configFile == null) throw new NullPointerException("Config file is null. Can't save.");
-
+        try {
+            FileUtils.writeStringToFile(configFile, Manager.instance.gson.toJson(config), Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void put(String key, Object value) {
@@ -40,6 +48,9 @@ public class Config {
 
     public boolean getBoolean(String key) {
         return (boolean) config.getOrDefault(key, defaultConfig.get(key));
+    }
+    public int getInt(String key) {
+        return (int) config.getOrDefault(key, defaultConfig.get(key));
     }
     public String getString(String key) {
         return (String) config.getOrDefault(key, defaultConfig.get(key));

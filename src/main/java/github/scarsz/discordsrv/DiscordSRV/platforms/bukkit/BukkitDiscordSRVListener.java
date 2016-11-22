@@ -17,6 +17,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
         if (event.getGameDestinationChannel() == null) {
             Bukkit.broadcastMessage(event.getMessage());
         }
+        //TODO if channel not null
     }
 
 }

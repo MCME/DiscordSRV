@@ -1,16 +1,21 @@
 package github.scarsz.discordsrv.DiscordSRV;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.objects.Config;
 import github.scarsz.discordsrv.DiscordSRV.objects.PlatformType;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
+import github.scarsz.discordsrv.DiscordSRV.threads.ChannelTopicUpdater;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,29 +27,39 @@ import java.util.List;
  */
 public class Manager {
 
-    public static Platform platform;
-    public static PlatformType platformType;
+    public static Manager instance;
+    public Platform platform;
+    public PlatformType platformType;
     public Manager(Platform platform) {
-        Manager.platform = platform;
+        Manager.instance = this;
+        this.platform = platform;
 
         switch (platform.getClass().getSimpleName().replace("Platform", "").toLowerCase()) {
-            case "bukkit": Manager.platformType = PlatformType.BUKKIT; break;
-            case "bungeecord": Manager.platformType = PlatformType.BUNGEECORD; break;
-            case "sponge": Manager.platformType = PlatformType.SPONGE; break;
-            default: platform.severe("Could not determine platform. Tell Scarsz to fix this case he's a retard."); Manager.platformType = PlatformType.BUKKIT;
+            // in order of least to most hated
+            case "bukkit": this.platformType = PlatformType.BUKKIT; break;
+            case "bungeecord": this.platformType = PlatformType.BUNGEECORD; break;
+            case "sponge": this.platformType = PlatformType.SPONGE; break;
+            default: platform.severe("Could not determine platform. Tell Scarsz to fix this case he's a retard."); this.platformType = PlatformType.BUKKIT;
         }
     }
 
-    public Config config = new Config();
-    public JDA jda = null;
+    public static DecimalFormat decimalFormat = new DecimalFormat("#.#");
 
+    public Config config = new Config();
+    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public JDA jda = null;
+    public long startTime = System.currentTimeMillis();
+
+    public TextChannel chatChannel; //TODO
+    public TextChannel consoleChannel; //TODO
     private List<DiscordSRVListener> listeners = new ArrayList<>();
+    public ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
 
     public void initialize() {
         // send the config File to the Config
         config.configFile = platform.getPluginConfigFile();
 
-        // shutdown JDA if it was already running (plugin reload)
+        // shutdown JDA if it was already running (plugin reload? 🤦)
         if (jda != null) jda.shutdown(false);
 
         // build JDA
@@ -58,6 +73,14 @@ public class Manager {
                     .buildBlocking();
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             e.printStackTrace();
+        }
+
+        // start channel topic updater if not already
+        if (channelTopicUpdater.getState() == Thread.State.NEW) channelTopicUpdater.start();
+        else {
+            if (channelTopicUpdater != null) channelTopicUpdater.interrupt();
+            channelTopicUpdater = new ChannelTopicUpdater();
+            channelTopicUpdater.start();
         }
     }
 
