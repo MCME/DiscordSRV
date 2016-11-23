@@ -3,22 +3,28 @@ package github.scarsz.discordsrv.DiscordSRV;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
+import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.DiscordSRV.objects.AccountLinkManager;
 import github.scarsz.discordsrv.DiscordSRV.objects.Config;
 import github.scarsz.discordsrv.DiscordSRV.objects.PlatformType;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.threads.ChannelTopicUpdater;
+import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.OnlineStatus;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Made by Scarsz
@@ -45,11 +51,14 @@ public class Manager {
     }
 
     public static DecimalFormat decimalFormat = new DecimalFormat("#.#");
-
-    public Config config = new Config();
-    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public final Map<String, TextChannel> channels = new HashMap<>();
+    public final Config config = new Config();
+    public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public final List<String> hookedPlugins = new ArrayList<>();
     public JDA jda = null;
-    public long startTime = System.currentTimeMillis();
+    public final long startTime = System.currentTimeMillis();
+    public AccountLinkManager accountLinkManager;
+    public final Map<String, UUID> linkingCodes = new HashMap<>();
 
     public TextChannel chatChannel; //TODO
     public TextChannel consoleChannel; //TODO
@@ -60,11 +69,15 @@ public class Manager {
         // send the config File to the Config
         config.configFile = platform.getPluginConfigFile();
 
+        //TODO update check
+        //TODO CKC thank yous
+        //TODO random phrases
+
         // shutdown JDA if it was already running (plugin reload? 🤦)
         if (jda != null) jda.shutdown(false);
 
-
-        SimpleLog.LEVEL = SimpleLog.Level.WARNING;
+        // set JDA message logging
+        SimpleLog.LEVEL = SimpleLog.Level.OFF;
         SimpleLog.addListener(new SimpleLog.LogListener() {
             @Override
             public void onLog(SimpleLog simpleLog, SimpleLog.Level level, Object o) {
@@ -78,9 +91,6 @@ public class Manager {
                     case FATAL:
                         platform.severe("[JDA] " + o);
                         break;
-                    default:
-                        platform.info("[JDA " + level.name().toUpperCase() + "] " + o);
-                        break;
                 }
             }
             @Override
@@ -90,12 +100,14 @@ public class Manager {
         // build JDA
         try {
             jda = new JDABuilder(AccountType.BOT)
-                    .setToken(config.getString("BotToken"))
-                    .addListener(new DiscordListener())
-                    .setAutoReconnect(true)
-                    .setAudioEnabled(false)
-                    .setBulkDeleteSplittingEnabled(false)
-                    .buildBlocking();
+                    .setToken(config.getString("BotToken")) // set bot token
+                    .addListener(new DiscordListener()) // register Discord listener
+                    .setAutoReconnect(true) // automatically reconnect to Discord if shit happens
+                    .setAudioEnabled(false) // we don't use audio and this not being disabled causes major codec problems on some systems
+                    .setBulkDeleteSplittingEnabled(false) // has to be off for JDA not to bitch
+                    .setGame(Game.of(config.getString("DiscordGameStatus"))) // set game status
+                    .setStatus(OnlineStatus.ONLINE) // set bot as online
+                    .buildBlocking(); // build JDA
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             e.printStackTrace();
         }
@@ -107,10 +119,59 @@ public class Manager {
             channelTopicUpdater = new ChannelTopicUpdater();
             channelTopicUpdater.start();
         }
+
+        // print the things the bot can see
+        for (Guild guild : jda.getGuilds()) {
+            platform.info("Found guild " + guild);
+            for (Channel channel : guild.getTextChannels()) {
+                platform.info("- " + channel);
+            }
+        }
+
+        //TODO relocate channels.json to proper location
+//        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
+//        try {
+//            for (ChannelInfo<String, String> channel : (List<ChannelInfo<String, String>>) gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<ChannelInfo<String, String>>>(){}.getType())) {
+//                if (channel == null || channel.channelName() == null || channel.channelId() == null) {
+//                    // malformed channels.json
+//                    platform.warning("JSON parsing error for " + channel + " \"" + channel.channelName() + "\" \"" + channel.channelId() + "\"");
+//                    continue;
+//                }
+//
+//                TextChannel requestedChannel = jda.getTextChannelById(channel.channelId());
+//                if (requestedChannel == null) continue;
+//                channels.put(channel.channelName(), requestedChannel);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
+        // check & get location info
+        chatChannel = getTextChannelFromChannelName(config.getString("DiscordMainChatChannel"));
+        consoleChannel = jda.getTextChannelById(config.getString("DiscordConsoleChannelId"));
+
+        if (chatChannel == null) platform.warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + config.getString("DiscordMainChatChannel") + "\"?)");
+        if (consoleChannel == null) platform.warning("Specified console channel from config could not be found");
+        if (chatChannel == null && consoleChannel == null) {
+            platform.severe("Chat and console channels are both unavailable, plugin will not work");
+            return;
+        }
+
+        // send startup message if enabled
+        if (config.getBoolean("DiscordChatChannelServerStartupMessageEnabled")) DiscordUtil.sendMessage(chatChannel, config.getString("DiscordChatChannelServerStartupMessage"));
+
+
     }
 
     public void processChatEvent(GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent) {
+        // broadcast gameChatMessagePreProcessEvent
         listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePreProcess(gameChatMessagePreProcessEvent));
+
+        //TODO actual message processing for game -> Discord
+
+        // broadcast GameChatMessagePostProcessEvent
+        GameChatMessagePostProcessEvent gameChatMessagePostProcessEvent = new GameChatMessagePostProcessEvent(gameChatMessagePreProcessEvent.getPlayerName(), gameChatMessagePreProcessEvent.getMessage());
+        listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePostProcess(gameChatMessagePostProcessEvent));
     }
 
     public void addListener(DiscordSRVListener listener) {
@@ -120,4 +181,12 @@ public class Manager {
         listeners.remove(listener);
     }
 
+    //TODO rename
+    public TextChannel getTextChannelFromChannelName(String channelName) {
+        return channels.get(channelName);
+    }
+
+    public boolean chatChannelIsLinked(String channelName) {
+        return channels.containsKey(channelName);
+    }
 }

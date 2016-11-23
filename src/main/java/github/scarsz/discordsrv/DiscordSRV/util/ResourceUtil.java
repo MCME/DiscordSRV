@@ -1,6 +1,8 @@
 package github.scarsz.discordsrv.DiscordSRV.util;
 
 import com.google.common.io.Resources;
+import github.scarsz.discordsrv.DiscordSRV.Manager;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -25,7 +27,9 @@ public class ResourceUtil {
 
     public static String getResourceAsString(String resourceName) {
         try {
-            return Resources.toString(Resources.getResource(resourceName), Charset.defaultCharset());
+            System.out.println(Resources.getResource(resourceName));
+            System.out.println(Manager.class.getResource(resourceName));
+            return IOUtils.toString(ResourceUtil.class.getClassLoader().getResourceAsStream(resourceName));
         } catch (IOException e) {
             e.printStackTrace();
             return null;

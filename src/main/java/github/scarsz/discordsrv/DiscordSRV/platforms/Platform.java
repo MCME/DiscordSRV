@@ -18,6 +18,22 @@ public interface Platform {
     File getPluginConfigFile();
 
     /**
+     * Trigger an info message on the platform's logger
+     * @param message the message to be triggered
+     */
+    void info(String message);
+    /**
+     * Trigger a warning message on the platform's logger
+     * @param message the message to be triggered
+     */
+    void warning(String message);
+    /**
+     * Trigger a severe message on the platform's logger
+     * @param message the message to be triggered
+     */
+    void severe(String message);
+
+    /**
      * Query for the platform's maximum player count
      * @return integer representing the platform's maximum player count
      */
@@ -47,22 +63,6 @@ public interface Platform {
      * @return
      */
     String queryTps();
-
-    /**
-     * Trigger an info message on the platform's logger
-     * @param message the message to be triggered
-     */
-    void info(String message);
-    /**
-     * Trigger a warning message on the platform's logger
-     * @param message the message to be triggered
-     */
-    void warning(String message);
-    /**
-     * Trigger a severe message on the platform's logger
-     * @param message the message to be triggered
-     */
-    void severe(String message);
 
 
 }

@@ -9,7 +9,7 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
 public class GameChatMessagePostProcessEvent extends GameChatMessageEvent {
 
     public GameChatMessagePostProcessEvent(String playerName, String message) {
-        super(playerName, message);
+        super(playerName, message, null);
     }
 
 }

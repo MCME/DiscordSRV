@@ -30,7 +30,7 @@ public class DiscordUtil {
     }
 
     /**
-     * Get the top hierarchical Role of the User
+     * Get the top hierarchical Role of the User in the Guild
      * @param user
      * @param guild
      * @return
@@ -38,6 +38,19 @@ public class DiscordUtil {
     public static Role getTopRole(User user, Guild guild) {
         Role highestRole = null;
         for (Role role : guild.getMember(user).getRoles()) {
+            if (highestRole == null) highestRole = role;
+            else if (highestRole.getPosition() < role.getPosition()) highestRole = role;
+        }
+        return highestRole;
+    }
+    /**
+     * Get the top hierarchical Role of the Member
+     * @param member
+     * @return
+     */
+    public static Role getTopRole(Member member) {
+        Role highestRole = null;
+        for (Role role : member.getRoles()) {
             if (highestRole == null) highestRole = role;
             else if (highestRole.getPosition() < role.getPosition()) highestRole = role;
         }
@@ -75,11 +88,12 @@ public class DiscordUtil {
             return -1;
         }
 
+        //TODO work out a better system for this
         try {
             int deletions = 0;
             List<Message> messages = channel.getHistory().retrievePast(100).block();
             while (messages.size() == 100) {
-                channel.deleteMessages(messages);
+                channel.deleteMessages(messages).block();
                 deletions += messages.size();
                 messages = channel.getHistory().retrievePast(100).block();
             }
@@ -119,7 +133,6 @@ public class DiscordUtil {
     public static void sendMessage(TextChannel channel, String message) {
         sendMessage(channel, message, 0);
     }
-
     /**
      * Send the given String message to the given TextChannel that will expire
      * @param channel the TextChannel to send the message to

@@ -1,7 +1,5 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.util.ResourceUtil;
 import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -23,9 +21,9 @@ public class Config {
 
     public Config() {
         // load default config values
-        ((Map<String, Object>) new Yaml().load(ResourceUtil.getResourceAsString("defaultconfig.yml"))).entrySet().forEach(entry -> {
-            defaultConfig.put(entry.getKey(), entry.getValue());
-        });
+//        ((Map<String, Object>) new Yaml().load(ResourceUtil.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+        defaultConfig.put("BotToken", "MTY5MjMxODcxNjI2OTY5MDg5.Cxahzw.D7KjITmr_L-K-5f70M1aaG_OwXA");
+        defaultConfig.put("DiscordGameStatus", "with my dick");
     }
 
     private Map<String, Object> config = new HashMap<>();
@@ -36,7 +34,8 @@ public class Config {
     public void save() {
         if (configFile == null) throw new NullPointerException("Config file is null. Can't save.");
         try {
-            FileUtils.writeStringToFile(configFile, Manager.instance.gson.toJson(config), Charset.defaultCharset());
+            //TODO properly(?) save
+            FileUtils.writeStringToFile(configFile, new Yaml().dump(config), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
         }

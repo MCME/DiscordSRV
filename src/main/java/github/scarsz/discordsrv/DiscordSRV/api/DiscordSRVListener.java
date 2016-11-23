@@ -38,7 +38,17 @@ public abstract class DiscordSRVListener {
      * @param event
      */
     public void gamePlayerDeath(GamePlayerDeathEvent event) {}
+
+    /**
+     * Called directly after a join event is processed to Discord
+     * @param event
+     */
     public void gamePlayerJoin(GamePlayerJoinEvent event) {}
+
+    /**
+     * Called directly after a quit event is processed to Discord
+     * @param event
+     */
     public void gamePlayerQuit(GamePlayerQuitEvent event) {}
 
 }

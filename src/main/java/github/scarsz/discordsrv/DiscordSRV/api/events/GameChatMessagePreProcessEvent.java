@@ -8,8 +8,8 @@ package github.scarsz.discordsrv.DiscordSRV.api.events;
  */
 public class GameChatMessagePreProcessEvent extends GameChatMessageEvent {
 
-    public GameChatMessagePreProcessEvent(String playerName, String message) {
-        super(playerName, message);
+    public GameChatMessagePreProcessEvent(String playerName, String message, String channel) {
+        super(playerName, message, channel);
     }
 
 }

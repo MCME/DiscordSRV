@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
+import github.scarsz.discordsrv.DiscordSRV.api.Event;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
 /**
@@ -8,7 +9,7 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
  * @in /dev/hell
  * @at 11/7/2016
  */
-public abstract class DiscordChatMessageEvent {
+public abstract class DiscordChatMessageEvent extends Event {
 
     private final String discordChannelId;
     private final String gameDestinationChannel;
