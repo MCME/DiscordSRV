@@ -172,13 +172,13 @@
             <version>2.8.7</version>
             <scope>provided</scope>
         </dependency>
-        <!-- mcMMO -->
+        <!-- mcMMO fuck this for now //TODO
         <dependency>
             <groupId>com.gmail.nossr50.mcMMO</groupId>
             <artifactId>mcMMO</artifactId>
             <version>1.5.00</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency> -->
         <!-- townychat -->
         <dependency>
             <groupId>com.palmergames.bukkit</groupId>
