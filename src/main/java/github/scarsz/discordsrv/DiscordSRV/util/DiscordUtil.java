@@ -80,10 +80,9 @@ public class DiscordUtil {
      * @return
      */
     public static int purgeChannel(TextChannel channel) {
-        if (!channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(channel, Permission.MESSAGE_MANAGE)) {
+        if (!DiscordUtil.checkPermission(channel, Permission.MESSAGE_MANAGE)) {
             String message = "I was told to purge the current channel but I don't have the `Manage Messages` permission.";
-            if (channel.getGuild().getMember(channel.getJDA().getSelfUser()).hasPermission(channel, Permission.MESSAGE_WRITE))
-                channel.sendMessage(message).queue();
+            if (DiscordUtil.checkPermission(channel, Permission.MESSAGE_WRITE)) channel.sendMessage(message).queue();
             else Manager.instance.platform.warning(message);
             return -1;
         }
@@ -97,7 +96,8 @@ public class DiscordUtil {
                 deletions += messages.size();
                 messages = channel.getHistory().retrievePast(100).block();
             }
-            if (messages.size() > 0) channel.deleteMessages(messages);
+            if (messages.size() > 1) channel.deleteMessages(messages).queue();
+            if (messages.size() == 1) channel.deleteMessageById(messages.get(0).getId()).queue();
             deletions += messages.size();
             return deletions;
         } catch (RateLimitedException e) {

@@ -11,6 +11,18 @@ import github.scarsz.discordsrv.DiscordSRV.api.events.*;
 @SuppressWarnings("unused")
 public abstract class DiscordSRVListener {
 
+    private final String name;
+    public DiscordSRVListener(String name) {
+        this.name = name;
+    }
+    /**
+     * Get the name of the listener
+     * @return the name of the listener
+     */
+    public String getName() {
+        return name;
+    }
+
     /**
      * Called directly before processing a received chat message from Discord
      * @param event
@@ -34,21 +46,36 @@ public abstract class DiscordSRVListener {
     public void gameChatMessagePostProcess(GameChatMessagePostProcessEvent event) {}
 
     /**
+     * Called directly before a death event is processed to Discord
+     * @param event
+     */
+    public void gamePlayerDeathPreProcess(GamePlayerDeathPreProcessEvent event) {}
+    /**
      * Called directly after a death event is processed to Discord
      * @param event
      */
-    public void gamePlayerDeath(GamePlayerDeathEvent event) {}
+    public void gamePlayerDeathPostProcess(GamePlayerDeathPostProcessEvent event) {}
 
     /**
-     * Called directly after a join event is processed to Discord
+     * Called directly before a join event is processed to Discord
      * @param event
      */
-    public void gamePlayerJoin(GamePlayerJoinEvent event) {}
+    public void gamePlayerJoinPreProcess(GamePlayerJoinPreProcessEvent event) {}
+    /**
+     * Called directly before a join event is processed to Discord
+     * @param event
+     */
+    public void gamePlayerJoinPostProcess(GamePlayerJoinPostProcessEvent event) {}
 
+    /**
+     * Called directly before a quit event is processed to Discord
+     * @param event
+     */
+    public void gamePlayerQuitPreProcessEvent(GamePlayerQuitPreProcessEvent event) {}
     /**
      * Called directly after a quit event is processed to Discord
      * @param event
      */
-    public void gamePlayerQuit(GamePlayerQuitEvent event) {}
+    public void gamePlayerQuitPostProcessEvent(GamePlayerQuitPostProcessEvent event) {}
 
 }

@@ -7,5 +7,4 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  * @on 11/22/2016
  * @at 3:18 PM
  */
-public class Event {
-}
+public abstract class Event extends Cancelable {}

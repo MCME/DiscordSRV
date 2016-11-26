@@ -29,7 +29,7 @@ public class ResourceUtil {
         try {
             System.out.println(Resources.getResource(resourceName));
             System.out.println(Manager.class.getResource(resourceName));
-            return IOUtils.toString(ResourceUtil.class.getClassLoader().getResourceAsStream(resourceName));
+            return IOUtils.toString(ResourceUtil.class.getClassLoader().getResourceAsStream(resourceName), Charset.defaultCharset());
         } catch (IOException e) {
             e.printStackTrace();
             return null;

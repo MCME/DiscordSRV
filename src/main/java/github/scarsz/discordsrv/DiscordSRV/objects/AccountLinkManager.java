@@ -9,4 +9,7 @@ package github.scarsz.discordsrv.DiscordSRV.objects;
  */
 public class AccountLinkManager {
     //TODO
+    public void save() {
+
+    }
 }

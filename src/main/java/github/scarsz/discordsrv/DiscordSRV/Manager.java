@@ -3,6 +3,7 @@ package github.scarsz.discordsrv.DiscordSRV;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
+import github.scarsz.discordsrv.DiscordSRV.api.Event;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePostProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.objects.AccountLinkManager;
@@ -23,6 +24,8 @@ import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.*;
 
@@ -51,18 +54,18 @@ public class Manager {
     }
 
     public static DecimalFormat decimalFormat = new DecimalFormat("#.#");
-    public final Map<String, TextChannel> channels = new HashMap<>();
-    public final Config config = new Config();
-    public final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    public final List<String> hookedPlugins = new ArrayList<>();
+    public Map<String, TextChannel> channels = new HashMap<>();
+    public Config config = new Config();
+    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    public List<String> hookedPlugins = new ArrayList<>();
     public JDA jda = null;
-    public final long startTime = System.currentTimeMillis();
+    public long startTime = System.currentTimeMillis();
     public AccountLinkManager accountLinkManager;
-    public final Map<String, UUID> linkingCodes = new HashMap<>();
+    public Map<String, UUID> linkingCodes = new HashMap<>();
 
     public TextChannel chatChannel; //TODO
     public TextChannel consoleChannel; //TODO
-    private List<DiscordSRVListener> listeners = new ArrayList<>();
+    public List<DiscordSRVListener> listeners = new ArrayList<>();
     public ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
 
     public void initialize() {
@@ -163,7 +166,19 @@ public class Manager {
 
     }
 
-    public void processChatEvent(GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent) {
+    public void shutdown() {
+        platform.info("Manager shutting down...");
+        jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
+        jda.shutdown(false);
+
+        channelTopicUpdater.interrupt();
+
+        accountLinkManager.save();
+        config.save();
+        platform.info(" done");
+    }
+
+    private void processChatEvent(GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent) {
         // broadcast gameChatMessagePreProcessEvent
         listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePreProcess(gameChatMessagePreProcessEvent));
 
@@ -174,11 +189,24 @@ public class Manager {
         listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePostProcess(gameChatMessagePostProcessEvent));
     }
 
+    public void processEvent(Event event) {
+        for (DiscordSRVListener listener : listeners) {
+            try {
+                Method eventMethod = listener.getClass().getMethod(event.getClass().getSimpleName().substring(0, 1).toLowerCase() + event.getClass().getSimpleName().substring(1).replace("Event", ""));
+                eventMethod.invoke(listener, event);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void addListener(DiscordSRVListener listener) {
         listeners.add(listener);
+        platform.info("Listener \"" + listener + "\" registered");
     }
     public void removeListener(DiscordSRVListener listener) {
         listeners.remove(listener);
+        platform.info("Listener \"" + listener + "\" unregistered");
     }
 
     //TODO rename

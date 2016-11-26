@@ -12,6 +12,10 @@ import org.bukkit.Bukkit;
  */
 public class BukkitDiscordSRVListener extends DiscordSRVListener {
 
+    public BukkitDiscordSRVListener() {
+        super("DiscordSRV - Bukkit Platform");
+    }
+
     @Override
     public void discordChatMessagePostProcess(DiscordChatMessagePostProcessEvent event) {
         if (event.getGameDestinationChannel() == null) {

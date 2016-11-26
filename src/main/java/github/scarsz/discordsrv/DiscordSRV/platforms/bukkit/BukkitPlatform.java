@@ -1,7 +1,9 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
+import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
 import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerDeathPreProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat.*;
 import org.bukkit.Bukkit;
@@ -126,17 +128,19 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
         GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent = new GameChatMessagePreProcessEvent(event.getPlayer().getName(), event.getMessage(), null);
-        manager.processChatEvent(gameChatMessagePreProcessEvent);
+        //manager.processChatEvent(gameChatMessagePreProcessEvent);
+        manager.processEvent(gameChatMessagePreProcessEvent);
     }
     @EventHandler(ignoreCancelled = true)
     public void onPlayerDeath(PlayerDeathEvent event) {
-        //TODO
+        for (DiscordSRVListener listener : manager.listeners) {
+            listener.gamePlayerDeathPreProcess(new GamePlayerDeathPreProcessEvent(event.getEntity().getName(), event.getEntity().getLastDamageCause().getDamage(), event.getDeathMessage(), event.getEntity().getWorld().getName()));
+        }
     }
 
     private boolean checkIfPluginEnabled(String pluginName) {
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins())
             if (plugin.getName().equalsIgnoreCase(pluginName)) return true;
-        }
         return false;
     }
 

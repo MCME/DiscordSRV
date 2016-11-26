@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.api.Event;
+import github.scarsz.discordsrv.DiscordSRV.api.PlayerEvent;
 
 /**
  * Made by Scarsz
@@ -8,8 +9,4 @@ import github.scarsz.discordsrv.DiscordSRV.api.Event;
  * @in /dev/hell
  * @at 11/8/2016
  */
-public class GamePlayerDeathEvent extends Event {
-
-    //TODO
-
-}
+public abstract class GamePlayerDeathEvent extends Event implements PlayerEvent {}
