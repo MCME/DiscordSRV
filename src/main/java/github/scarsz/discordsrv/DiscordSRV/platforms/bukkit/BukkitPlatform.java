@@ -6,6 +6,8 @@ import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessE
 import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerDeathPreProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
 import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat.*;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -18,6 +20,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -30,7 +33,7 @@ import java.util.stream.Collectors;
  */
 public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
-    public Manager manager = new Manager(this);
+    public Manager manager;
     public static BukkitPlatform instance = null;
 
     /*
@@ -91,6 +94,29 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     @Override
     public void onEnable() {
+        File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
+        try {
+            if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
+                getLogger().warning("");
+                getLogger().warning("");
+                getLogger().warning("You're attempting using Thermos with DiscordSRV without applying the SpecialSource fix.");
+                getLogger().warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos devs for having outdated libraries.");
+                getLogger().warning("");
+                getLogger().warning("Instructions for updating to ASM5:");
+                getLogger().warning("1. Navigate to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder of the server");
+                getLogger().warning("2. Delete the SpecialSource-1.7-SNAPSHOT.jar jar file");
+                getLogger().warning("3. Download SpecialSource v1.7.4 from http://central.maven.org/maven2/net/md-5/SpecialSource/1.7.4/SpecialSource-1.7.4.jar");
+                getLogger().warning("4. Copy the jar file to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder");
+                getLogger().warning("5. Rename the jar file you just copied to SpecialSource-1.7-SNAPSHOT.jar");
+                getLogger().warning("6. Restart the server");
+                getLogger().warning("");
+                getLogger().warning("");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        manager = new Manager(this);
         instance = this;
         manager.initialize();
         manager.addListener(new BukkitDiscordSRVListener());
