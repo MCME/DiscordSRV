@@ -53,7 +53,7 @@ public class Manager {
         }
     }
 
-    public static DecimalFormat decimalFormat = new DecimalFormat("#.#");
+    public static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
     public Map<String, TextChannel> channels = new HashMap<>();
     public Config config = new Config();
     public Gson gson = new GsonBuilder().setPrettyPrinting().create();
