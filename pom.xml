@@ -234,8 +234,8 @@
                                 </relocation>
 
                                 <relocation>
-                                    <pattern>org.apache.commons</pattern>
-                                    <shadedPattern>com.scarsz.discordsrv.commons</shadedPattern>
+                                    <pattern>org.apache</pattern>
+                                    <shadedPattern>com.scarsz.discordsrv</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>
