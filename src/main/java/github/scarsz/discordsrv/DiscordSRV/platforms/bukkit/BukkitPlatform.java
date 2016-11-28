@@ -122,7 +122,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         manager.addListener(new BukkitDiscordSRVListener());
 
         // clear past tasks in scheduler if any
-        getServer().getScheduler().cancelTasks(this);
+        Bukkit.getServer().getScheduler().cancelTasks(this);
 
         // start TPS monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
