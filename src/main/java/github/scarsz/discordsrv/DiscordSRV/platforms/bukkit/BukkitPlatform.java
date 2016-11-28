@@ -94,13 +94,13 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     @Override
     public void onEnable() {
-        File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
         try {
+            File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
                 getLogger().warning("");
                 getLogger().warning("");
-                getLogger().warning("You're attempting using Thermos with DiscordSRV without applying the SpecialSource fix.");
-                getLogger().warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos devs for having outdated libraries.");
+                getLogger().warning("You're attempting to use DiscordSRV on Thermos without applying the SpecialSource/ASM5 fix.");
+                getLogger().warning("DiscordSRV WILL NOT work without it on Thermos. Blame the Thermos developers for having outdated libraries.");
                 getLogger().warning("");
                 getLogger().warning("Instructions for updating to ASM5:");
                 getLogger().warning("1. Navigate to the libraries/net/md-5/SpecialSource/1.7-SNAPSHOT folder of the server");
@@ -120,6 +120,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         instance = this;
         manager.initialize();
         manager.addListener(new BukkitDiscordSRVListener());
+
+        // clear past tasks in scheduler if any
+        getServer().getScheduler().cancelTasks(this);
 
         // start TPS monitor
         Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(this, new Lag(), 100L, 1L);
