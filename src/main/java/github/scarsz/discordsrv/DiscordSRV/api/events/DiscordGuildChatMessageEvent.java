@@ -1,5 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
+import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.Event;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
 
@@ -9,7 +10,7 @@ import net.dv8tion.jda.core.events.message.guild.GuildMessageReceivedEvent;
  * @in /dev/hell
  * @at 11/7/2016
  */
-public abstract class DiscordChatMessageEvent extends Event {
+public class DiscordGuildChatMessageEvent extends Event {
 
     private final String discordChannelId;
     private final String gameDestinationChannel;
@@ -17,30 +18,26 @@ public abstract class DiscordChatMessageEvent extends Event {
     private final GuildMessageReceivedEvent rawEvent;
     private final String senderId;
 
-    public DiscordChatMessageEvent(String discordChannelId, String gameDestinationChannel, String message, GuildMessageReceivedEvent rawEvent, String senderId) {
-        this.discordChannelId = discordChannelId;
-        this.gameDestinationChannel = gameDestinationChannel;
-        this.message = message;
+    public DiscordGuildChatMessageEvent(GuildMessageReceivedEvent rawEvent) {
+        this.discordChannelId = rawEvent.getChannel().getId();
+        this.gameDestinationChannel = Manager.instance.getChannelNameFromTextChannel(rawEvent.getChannel());
+        this.message = rawEvent.getMessage().getRawContent();
         this.rawEvent = rawEvent;
-        this.senderId = senderId;
+        this.senderId = rawEvent.getAuthor().getId();
     }
 
     public String getDiscordChannelId() {
         return discordChannelId;
     }
-
     public String getGameDestinationChannel() {
         return gameDestinationChannel;
     }
-
     public String getMessage() {
         return message;
     }
-
     public GuildMessageReceivedEvent getRawEvent() {
         return rawEvent;
     }
-
     public String getSenderId() {
         return senderId;
     }

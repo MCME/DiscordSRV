@@ -7,9 +7,14 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  * @on 11/25/2016
  * @at 10:26 PM
  */
-public interface PlayerEvent {
+public abstract class PlayerEvent extends Event {
 
-    String getPlayer();
-    void setPlayer(String player);
+    private String player;
+    public String getPlayer() {
+        return player;
+    }
+    protected void setPlayer(String player) {
+        this.player = player;
+    }
 
 }

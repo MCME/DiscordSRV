@@ -12,70 +12,71 @@ import github.scarsz.discordsrv.DiscordSRV.api.events.*;
 public abstract class DiscordSRVListener {
 
     private final String name;
-    public DiscordSRVListener(String name) {
-        this.name = name;
-    }
     /**
      * Get the name of the listener
      * @return the name of the listener
      */
-    public String getName() {
+    public final String getName() {
         return name;
     }
 
+    private final Priority priority;
     /**
-     * Called directly before processing a received chat message from Discord
-     * @param event
+     * Get the name of the listener
+     * @return the name of the listener
      */
-    public void discordChatMessagePreProcess(DiscordChatMessagePreProcessEvent event) {}
-    /**
-     * Called directly after processing a received chat message from Discord
-     * @param event
-     */
-    public void discordChatMessagePostProcess(DiscordChatMessagePostProcessEvent event) {}
+    public final Priority getPriority() {
+        return priority;
+    }
+
+    public DiscordSRVListener(String name) {
+        this(name, Priority.NORMAL);
+    }
+    public DiscordSRVListener(String name, Priority priority) {
+        this.name = name;
+        this.priority = priority;
+    }
 
     /**
-     * Called directly before processing a received chat message from the game
+     * Called upon receiving a raw event from Discord, before the specific API method for the event is called
      * @param event
      */
-    public void gameChatMessagePreProcess(GameChatMessagePreProcessEvent event) {}
-    /**
-     * Called directly after processing a received chat message from the game
-     * @param event
-     */
-    public void gameChatMessagePostProcess(GameChatMessagePostProcessEvent event) {}
+    public void onDiscordGeneric(DiscordGenericEvent event) {}
 
     /**
-     * Called directly before a death event is processed to Discord
+     * Called when a Discord guild message event is being processed for delivery to Minecraft
      * @param event
      */
-    public void gamePlayerDeathPreProcess(GamePlayerDeathPreProcessEvent event) {}
-    /**
-     * Called directly after a death event is processed to Discord
-     * @param event
-     */
-    public void gamePlayerDeathPostProcess(GamePlayerDeathPostProcessEvent event) {}
+    public void onDiscordGuildChatMessage(DiscordGuildChatMessageEvent event) {}
 
     /**
-     * Called directly before a join event is processed to Discord
+     * Called when a Discord private message event is being processed for delivery to Minecraft
      * @param event
      */
-    public void gamePlayerJoinPreProcess(GamePlayerJoinPreProcessEvent event) {}
+    public void onDiscordPrivateMessageChatMessage(DiscordPrivateMessageChatMessageEvent event) {}
+    
     /**
-     * Called directly before a join event is processed to Discord
+     * Called when a chat event is being processed for delivery to Discord
      * @param event
      */
-    public void gamePlayerJoinPostProcess(GamePlayerJoinPostProcessEvent event) {}
+    public void onGameChatMessage(GameChatMessageEvent event) {}
 
     /**
-     * Called directly before a quit event is processed to Discord
+     * Called when a death event is being processed for delivery to Discord
      * @param event
      */
-    public void gamePlayerQuitPreProcessEvent(GamePlayerQuitPreProcessEvent event) {}
+    public void onGamePlayerDeath(GamePlayerDeathEvent event) {}
+
     /**
-     * Called directly after a quit event is processed to Discord
+     * Called when a join event is being processed for delivery to Discord
      * @param event
      */
-    public void gamePlayerQuitPostProcessEvent(GamePlayerQuitPostProcessEvent event) {}
+    public void onGamePlayerJoin(GamePlayerJoinEvent event) {}
+
+    /**
+     * Called when a quit event is being processed for delivery to Discord
+     * @param event
+     */
+    public void onGamePlayerQuit(GamePlayerQuitEvent event) {}
 
 }

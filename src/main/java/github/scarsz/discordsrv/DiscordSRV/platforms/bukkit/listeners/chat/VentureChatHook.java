@@ -1,4 +1,4 @@
-package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat;
+package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat;
 
 import org.bukkit.event.Listener;
 

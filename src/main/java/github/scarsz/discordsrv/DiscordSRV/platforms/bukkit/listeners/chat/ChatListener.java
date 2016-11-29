@@ -1,7 +1,7 @@
-package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat;
+package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.util.DiscordUtil;
+import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessageEvent;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -18,7 +18,7 @@ public class ChatListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onAsyncPlayerChat(AsyncPlayerChatEvent event) {
-        DiscordUtil.sendMessage(Manager.instance.getTextChannelFromChannelName("global"), "booty booty booty booty rocking everywhere");
+        Manager.instance.processEvent(GameChatMessageEvent.fromEvent(event, null));
     }
 
 }

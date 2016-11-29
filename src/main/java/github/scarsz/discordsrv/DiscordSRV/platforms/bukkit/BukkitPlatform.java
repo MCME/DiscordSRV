@@ -1,21 +1,15 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
-import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
-import github.scarsz.discordsrv.DiscordSRV.api.events.GamePlayerDeathPreProcessEvent;
 import github.scarsz.discordsrv.DiscordSRV.platforms.Platform;
-import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat.*;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.DeathListener;
+import github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -58,6 +52,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     }
     public void severe(String message) {
         getLogger().severe(message);
+    }
+    public void debug(String message) {
+        getLogger().info("DEBUG | " + message);
     }
 
     public int queryMaxPlayers() {
@@ -135,36 +132,25 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
             getLogger().info("Enabling LegendChat hook");
             getServer().getPluginManager().registerEvents(new LegendChatHook(), this);
         } else if (checkIfPluginEnabled("LunaChat") && getConfig().getBoolean("LunaChatHook")) {
-            getLogger().info("Enabling LunaChatHook hook");
+            getLogger().info("Enabling LunaChat hook");
             getServer().getPluginManager().registerEvents(new LunaChatHook(), this);
         } else if (checkIfPluginEnabled("Towny") && checkIfPluginEnabled("TownyChat") && getConfig().getBoolean("TownyChatHook")) {
-            getLogger().info("Enabling TownyChatHook hook");
+            getLogger().info("Enabling TownyChat hook");
             getServer().getPluginManager().registerEvents(new TownyChatHook(), this);
         } else if (checkIfPluginEnabled("venturechat") && getConfig().getBoolean("VentureChatHook")) {
-            getLogger().info("Enabling VentureChatHook hook");
+            getLogger().info("Enabling VentureChat hook");
             getServer().getPluginManager().registerEvents(new VentureChatHook(), this);
         } else {
             getLogger().info("No compatible chat plugins found that have their hooks enabled");
             getServer().getPluginManager().registerEvents(new ChatListener(), this);
         }
+
+        getServer().getPluginManager().registerEvents(new DeathListener(), this);
     }
 
     @Override
     public void onDisable() {
 
-    }
-
-    @EventHandler(priority = EventPriority.MONITOR)
-    public void onPlayerChat(AsyncPlayerChatEvent event) {
-        GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent = new GameChatMessagePreProcessEvent(event.getPlayer().getName(), event.getMessage(), null);
-        //manager.processChatEvent(gameChatMessagePreProcessEvent);
-        manager.processEvent(gameChatMessagePreProcessEvent);
-    }
-    @EventHandler(ignoreCancelled = true)
-    public void onPlayerDeath(PlayerDeathEvent event) {
-        for (DiscordSRVListener listener : manager.listeners) {
-            listener.gamePlayerDeathPreProcess(new GamePlayerDeathPreProcessEvent(event.getEntity().getName(), event.getEntity().getLastDamageCause().getDamage(), event.getDeathMessage(), event.getEntity().getWorld().getName()));
-        }
     }
 
     private boolean checkIfPluginEnabled(String pluginName) {

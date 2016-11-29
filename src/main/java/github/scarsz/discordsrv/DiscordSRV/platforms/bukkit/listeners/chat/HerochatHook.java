@@ -1,11 +1,11 @@
-package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.chat;
+package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit.listeners.chat;
 
 import com.dthielke.herochat.Channel;
 import com.dthielke.herochat.ChannelChatEvent;
 import com.dthielke.herochat.Chatter;
 import com.dthielke.herochat.Herochat;
 import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessageEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -44,7 +44,7 @@ public class HerochatHook implements Listener {
         if (event.getMessage().replace(" ", "").isEmpty()) return;
 
         //Manager.instance.processChatEvent(false, event.getSender().getPlayer(), event.getMessage(), event.getChannel().getName());
-        Manager.instance.processEvent(new GameChatMessagePreProcessEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName()));
+        Manager.instance.processEvent(new GameChatMessageEvent(event.getSender().getPlayer().getName(), event.getMessage(), event.getChannel().getName()));
     }
 
     public static void broadcastMessageToChannel(String channelName, String message, String rawMessage) {

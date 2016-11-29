@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms.bukkit;
 
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
-import github.scarsz.discordsrv.DiscordSRV.api.events.DiscordChatMessagePostProcessEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.events.DiscordGuildChatMessageEvent;
 import org.bukkit.Bukkit;
 
 /**
@@ -17,7 +17,7 @@ public class BukkitDiscordSRVListener extends DiscordSRVListener {
     }
 
     @Override
-    public void discordChatMessagePostProcess(DiscordChatMessagePostProcessEvent event) {
+    public void onDiscordGuildChatMessage(DiscordGuildChatMessageEvent event) {
         if (event.getGameDestinationChannel() == null) {
             Bukkit.broadcastMessage(event.getMessage());
         }

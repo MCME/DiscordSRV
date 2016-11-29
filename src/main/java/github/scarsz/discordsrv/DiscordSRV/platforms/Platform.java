@@ -32,6 +32,11 @@ public interface Platform {
      * @param message the message to be triggered
      */
     void severe(String message);
+    /**
+     * Trigger a debug message on the platform's logger
+     * @param message the message to be triggered
+     */
+    void debug(String message);
 
     /**
      * Query for the platform's maximum player count
@@ -63,6 +68,5 @@ public interface Platform {
      * @return
      */
     String queryTps();
-
 
 }

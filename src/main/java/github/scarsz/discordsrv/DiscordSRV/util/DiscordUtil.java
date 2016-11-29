@@ -58,7 +58,7 @@ public class DiscordUtil {
     }
 
     /**
-     * Convert @mentions into Discord-compatible <@12345678901234567890> mentions
+     * Convert @mentions into Discord-compatible <@012345678901234567890> mentions
      * @param message
      * @param guild
      * @return

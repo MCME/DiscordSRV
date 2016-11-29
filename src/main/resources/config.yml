@@ -4,8 +4,14 @@ ConfigVersion: ${project.version}
 # Bot token; don't know what this is? Look at the video on http://dev.bukkit.org/bukkit-plugins/discordsrv/ for instructions
 BotToken: "BOTTOKEN"
 
+# Channel links from game to Discord
+# syntax is Channels: {"in-game channel name": "numerical channel ID from Discord", "another in-game channel name": "another numerical channel ID from Discord"}
+# This only affects Bukkit platforms currently
+Channels: {"global": "NUMERICALCHANNELID", "whatever": "NUMERICALCHANNELID"}
+
 # Main chat channel name *from channels.json* for sending non-chat related messages like player joins, deaths, achievements, etc
 # Don't touch this unless you have a chat channel plugin
+# This only affects Bukkit platforms currently
 DiscordMainChatChannel: "global"
 
 # Console channel numerical ID (NOT NAME), leave blank to disable the console channel all together
@@ -24,6 +30,7 @@ UseOldConsoleCommandSender: false
 # Hooks and the format for the message
 #
 # Format can use %channelcolor%, %channelname%, %channelnickname%, %message%
+# This only affects Bukkit platforms currently
 #
 ChatChannelHookMessageFormat: "%channelcolor%[%channelnickname%]&r %message%"
 HeroChatHook: true
@@ -238,7 +245,7 @@ ChannelTopicUpdaterConsoleChannelTopicFormat: "TPS: %tps% | Mem: %usedmemorygb%G
 ChannelTopicUpdaterRateInSeconds: 5
 
 # Subscription messages
-# These are just the messages sent when a user uses /discord subscribe/unsubscribe/toggle
+# These are the messages sent when a user uses /discord subscribe/unsubscribe/toggle
 #
 MinecraftSubscriptionMessagesOnSubscribe: "&bYou have been subscribed to Discord messages."
 MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to Discord messages."
@@ -249,19 +256,19 @@ MinecraftSubscriptionMessagesOnUnsubscribe: "&bYou are no longer subscribed to D
 DiscordCommandFormat: "&bJoin us on Discord at http://discord.gg/changethisintheconfig. For command help, do \"/discord ?\""
 
 # Discord channel purge command
-# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in.
+# This is the command (by default "discordsrvpurgechannel") that will delete all messages in the channel the command was issued in
 # To disable purging all together, set DiscordChannelPurgeCommand to be blank, leaving the quotation marks
-# Use this very wisely.
+# Use this very wisely
 #
-# DiscordChannelPurgeCommand: the exact message that will trigger the purge.
+# DiscordChannelPurgeCommand: the exact message that will trigger the purge
 # DiscordChannelPurgeCommandRoles: the role names allowed to purge channels
 #
 DiscordChannelPurgeCommand: "discordsrvpurgechannel"
 DiscordChannelPurgeCommandRoles: ["Owner", "Admin"]
 
 # Discord canned responses
-# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them.
-# You should probably change these from their defaults or add your own.
+# These are triggers (commands in a way) that will trigger a "canned response" to be sent as a reply to them
+# You should probably change these from their defaults or add your own
 #
 # Syntax is {"TRIGGER": "RESPONSE", "TRIGGER": "RESPONSE", ...}
 #

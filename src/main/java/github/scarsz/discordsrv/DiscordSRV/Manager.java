@@ -1,11 +1,8 @@
 package github.scarsz.discordsrv.DiscordSRV;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import github.scarsz.discordsrv.DiscordSRV.api.DiscordSRVListener;
 import github.scarsz.discordsrv.DiscordSRV.api.Event;
-import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePostProcessEvent;
-import github.scarsz.discordsrv.DiscordSRV.api.events.GameChatMessagePreProcessEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.Priority;
 import github.scarsz.discordsrv.DiscordSRV.objects.AccountLinkManager;
 import github.scarsz.discordsrv.DiscordSRV.objects.Config;
 import github.scarsz.discordsrv.DiscordSRV.objects.PlatformType;
@@ -56,7 +53,6 @@ public class Manager {
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
     public Map<String, TextChannel> channels = new HashMap<>();
     public Config config = new Config();
-    public Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public List<String> hookedPlugins = new ArrayList<>();
     public JDA jda = null;
     public long startTime = System.currentTimeMillis();
@@ -102,15 +98,19 @@ public class Manager {
 
         // build JDA
         try {
-            jda = new JDABuilder(AccountType.BOT)
+            JDABuilder builder = new JDABuilder(AccountType.BOT)
                     .setToken(config.getString("BotToken")) // set bot token
                     .addListener(new DiscordListener()) // register Discord listener
                     .setAutoReconnect(true) // automatically reconnect to Discord if shit happens
                     .setAudioEnabled(false) // we don't use audio and this not being disabled causes major codec problems on some systems
                     .setBulkDeleteSplittingEnabled(false) // has to be off for JDA not to bitch
-                    .setGame(Game.of(config.getString("DiscordGameStatus"))) // set game status
-                    .setStatus(OnlineStatus.ONLINE) // set bot as online
-                    .buildBlocking(); // build JDA
+                    .setStatus(OnlineStatus.ONLINE); // set bot as online
+
+            // set game status
+            if (config.getString("DiscordGameStatus") != null && !config.getString("DiscordGameStatus").isEmpty())
+                builder.setGame(Game.of(config.getString("DiscordGameStatus")));
+
+            jda = builder.buildBlocking(); // build JDA
         } catch (LoginException | InterruptedException | RateLimitedException e) {
             e.printStackTrace();
         }
@@ -131,24 +131,6 @@ public class Manager {
             }
         }
 
-        //TODO relocate channels.json to proper location
-//        if (!new File(getDataFolder(), "channels.json").exists()) saveResource("channels.json", false);
-//        try {
-//            for (ChannelInfo<String, String> channel : (List<ChannelInfo<String, String>>) gson.fromJson(FileUtils.readFileToString(new File(getDataFolder(), "channels.json"), Charset.defaultCharset()), new TypeToken<List<ChannelInfo<String, String>>>(){}.getType())) {
-//                if (channel == null || channel.channelName() == null || channel.channelId() == null) {
-//                    // malformed channels.json
-//                    platform.warning("JSON parsing error for " + channel + " \"" + channel.channelName() + "\" \"" + channel.channelId() + "\"");
-//                    continue;
-//                }
-//
-//                TextChannel requestedChannel = jda.getTextChannelById(channel.channelId());
-//                if (requestedChannel == null) continue;
-//                channels.put(channel.channelName(), requestedChannel);
-//            }
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
         // check & get location info
         chatChannel = getTextChannelFromChannelName(config.getString("DiscordMainChatChannel"));
         consoleChannel = jda.getTextChannelById(config.getString("DiscordConsoleChannelId"));
@@ -156,7 +138,7 @@ public class Manager {
         if (chatChannel == null) platform.warning("Specified chat channel from channels.json could not be found (is it's name set to \"" + config.getString("DiscordMainChatChannel") + "\"?)");
         if (consoleChannel == null) platform.warning("Specified console channel from config could not be found");
         if (chatChannel == null && consoleChannel == null) {
-            platform.severe("Chat and console channels are both unavailable, plugin will not work");
+            platform.severe("Chat and console channels are both unavailable, plugin will not work properly");
             return;
         }
 
@@ -168,6 +150,8 @@ public class Manager {
 
     public void shutdown() {
         platform.info("Manager shutting down...");
+        long shutdownStartTime = System.currentTimeMillis();
+
         jda.getPresence().setStatus(OnlineStatus.INVISIBLE);
         jda.shutdown(false);
 
@@ -175,43 +159,63 @@ public class Manager {
 
         accountLinkManager.save();
         config.save();
-        platform.info(" done");
-    }
 
-    private void processChatEvent(GameChatMessagePreProcessEvent gameChatMessagePreProcessEvent) {
-        // broadcast gameChatMessagePreProcessEvent
-        listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePreProcess(gameChatMessagePreProcessEvent));
-
-        //TODO actual message processing for game -> Discord
-
-        // broadcast GameChatMessagePostProcessEvent
-        GameChatMessagePostProcessEvent gameChatMessagePostProcessEvent = new GameChatMessagePostProcessEvent(gameChatMessagePreProcessEvent.getPlayerName(), gameChatMessagePreProcessEvent.getMessage());
-        listeners.forEach(discordSRVListener -> discordSRVListener.gameChatMessagePostProcess(gameChatMessagePostProcessEvent));
+        platform.info("done in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
 
     public void processEvent(Event event) {
-        for (DiscordSRVListener listener : listeners) {
-            try {
-                Method eventMethod = listener.getClass().getMethod(event.getClass().getSimpleName().substring(0, 1).toLowerCase() + event.getClass().getSimpleName().substring(1).replace("Event", ""));
-                eventMethod.invoke(listener, event);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+        platform.debug("Event " + event + ":");
+        for (Priority priority : Priority.values()) {
+            platform.debug("Processing priority " + priority);
+            for (DiscordSRVListener listener : listeners) {
+                if (listener.getPriority() != priority) continue;
+                System.out.println("Performing listener " + listener.getName());
+
+                try {
+                    Method method = null;
+                    for (Method iteratedMethod : listener.getClass().getMethods()) {
+                        if (iteratedMethod.getName().equals("on" + event.getClass().getSimpleName().replace("Event", "")) && iteratedMethod.getParameterCount() == 1)
+                            method = iteratedMethod;
+                    }
+                    if (method == null) continue;
+
+                    boolean isCanceled = event.isCanceled();
+                    method.invoke(listener, event);
+                    if (isCanceled != event.isCanceled() && config.getBoolean("Debug")) platform.debug("Event " + event.getClass().getSimpleName() + " canceled by " + listener.getName());
+                } catch (IllegalAccessException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
+        // at this point, all listeners have been informed of the event. the for loop ends directly
+        // after the last MONITOR priority, so code after this is technically also MONITOR priority
+
+        // don't process event if a listener canceled it
+        if (event.isCanceled()) return;
+
+        // perform event
+
     }
 
     public void addListener(DiscordSRVListener listener) {
         listeners.add(listener);
-        platform.info("Listener \"" + listener + "\" registered");
+        platform.info("Listener \"" + listener.getName() + "\" [" + listener.getClass() + "] registered");
     }
     public void removeListener(DiscordSRVListener listener) {
         listeners.remove(listener);
-        platform.info("Listener \"" + listener + "\" unregistered");
+        platform.info("Listener \"" + listener.getName() + "\" [" + listener.getClass() + "] unregistered");
     }
 
-    //TODO rename
+    //TODO rename getTextChannelFromChannelName
     public TextChannel getTextChannelFromChannelName(String channelName) {
         return channels.get(channelName);
+    }
+    public String getChannelNameFromTextChannel(TextChannel channel) {
+        for (Map.Entry<String, TextChannel> entry : channels.entrySet())
+            if (entry.getValue().getId().equals(channel.getId()))
+                return entry.getKey();
+        return null;
     }
 
     public boolean chatChannelIsLinked(String channelName) {
