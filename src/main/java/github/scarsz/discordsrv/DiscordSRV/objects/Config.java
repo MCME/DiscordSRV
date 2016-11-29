@@ -20,15 +20,25 @@ import java.util.Map;
 @SuppressWarnings({"unused", "unchecked"})
 public class Config {
 
+    private Yaml yaml = new Yaml();
+
     public Config() {
         // load default config values
-        ((Map<String, Object>) new Yaml().load(ResourceUtil.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+        ((Map<String, Object>) yaml.load(ResourceUtil.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
     }
 
     private Map<String, Object> config = new HashMap<>();
     private Map<String, Object> defaultConfig = new HashMap<>();
 
     public File configFile = null;
+
+    public void initialize() {
+        try {
+            ((Map<String, Object>) yaml.load(FileUtils.readFileToString(configFile, Charset.defaultCharset()))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void save() {
         if (configFile == null) throw new NullPointerException("Config file is null. Can't save.");

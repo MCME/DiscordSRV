@@ -65,8 +65,9 @@ public class Manager {
     public ChannelTopicUpdater channelTopicUpdater = new ChannelTopicUpdater();
 
     public void initialize() {
-        // send the config File to the Config
+        // send the config File to the Config & init
         config.configFile = platform.getPluginConfigFile();
+        config.initialize();
 
         //TODO update check
         //TODO CKC thank yous

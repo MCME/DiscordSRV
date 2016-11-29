@@ -15,12 +15,12 @@ import java.util.List;
  * @on 11/28/2016
  * @at 4:59 PM
  */
-public class TestMainIsntTheActualPluginDontUseIt implements Platform {
+public class Main implements Platform {
 
     static Manager manager;
 
     public static void main(String[] args) {
-        manager = new Manager(new TestMainIsntTheActualPluginDontUseIt());
+        manager = new Manager(new Main());
         manager.config.put("BotToken", "");
         manager.config.put("DiscordGameStatus", null);
         manager.initialize();
