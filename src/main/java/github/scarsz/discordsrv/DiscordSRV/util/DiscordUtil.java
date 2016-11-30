@@ -1,6 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.util;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
+import net.dv8tion.jda.core.MessageBuilder;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -172,20 +173,19 @@ public class DiscordUtil {
     }
 
     public static Message blockMessage(TextChannel channel, String message) {
-        try {
-            return channel.sendMessage(message).block();
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return blockMessage(channel, new MessageBuilder().appendString(message).build());
     }
     public static Message blockMessage(TextChannel channel, Message message) {
-        try {
-            return channel.sendMessage(message).block();
-        } catch (RateLimitedException e) {
-            e.printStackTrace();
-            return null;
+        final Message[] returnedMessage = {null};
+        channel.sendMessage(message).queue(message1 -> returnedMessage[0] = message1);
+        while (returnedMessage == null) {
+            try {
+                Thread.sleep(10);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
+        return returnedMessage[0];
     }
     public static void queueMessage(TextChannel channel, String message, Consumer<Message> consumer) {
         channel.sendMessage(message).queue(consumer);

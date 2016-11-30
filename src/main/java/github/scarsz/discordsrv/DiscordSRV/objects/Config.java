@@ -1,6 +1,6 @@
 package github.scarsz.discordsrv.DiscordSRV.objects;
 
-import github.scarsz.discordsrv.DiscordSRV.util.ResourceUtil;
+import github.scarsz.discordsrv.DiscordSRV.Manager;
 import org.apache.commons.io.FileUtils;
 import org.yaml.snakeyaml.Yaml;
 
@@ -24,7 +24,7 @@ public class Config {
 
     public Config() {
         // load default config values
-        ((Map<String, Object>) yaml.load(ResourceUtil.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
+        ((Map<String, Object>) yaml.load(Manager.instance.platform.getResourceAsString("config.yml"))).entrySet().forEach(entry -> defaultConfig.put(entry.getKey(), entry.getValue()));
     }
 
     private Map<String, Object> config = new HashMap<>();

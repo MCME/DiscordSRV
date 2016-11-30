@@ -1,6 +1,13 @@
 package github.scarsz.discordsrv.DiscordSRV.platforms;
 
+import com.google.common.io.Resources;
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -16,6 +23,33 @@ public interface Platform {
      * @return the config file object
      */
     File getPluginConfigFile();
+
+    /**
+     * Get the given resource as an InputStream
+     * @param name
+     * @return
+     */
+    default InputStream getResourceAsStream(String name) {
+        try {
+            return new FileInputStream(new File(Resources.getResource(name).getFile()));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    /**
+     * Get the given resource as a String
+     * @param name
+     * @return
+     */
+    default String getResourceAsString(String name) {
+        try {
+            return IOUtils.toString(getResourceAsStream(name), Charset.defaultCharset());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
 
     /**
      * Trigger an info message on the platform's logger

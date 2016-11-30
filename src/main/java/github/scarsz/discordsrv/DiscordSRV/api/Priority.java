@@ -13,5 +13,5 @@ public enum Priority {
     NORMAL,
     HIGH,
     HIGHEST,
-    MONITOR;
+    MONITOR
 }

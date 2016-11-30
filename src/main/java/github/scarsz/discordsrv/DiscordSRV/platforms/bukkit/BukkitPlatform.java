@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -43,6 +44,9 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     public File getPluginConfigFile() {
         return new File(getDataFolder(), "config.yml");
+    }
+    public InputStream getResourceAsStream(String name) {
+        return getResource(name);
     }
     public void info(String message) {
         getLogger().info(message);
@@ -91,6 +95,8 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     @Override
     public void onEnable() {
+        instance = this;
+
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
@@ -114,7 +120,6 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
         }
 
         manager = new Manager(this);
-        instance = this;
         manager.initialize();
         manager.addListener(new BukkitDiscordSRVListener());
 
