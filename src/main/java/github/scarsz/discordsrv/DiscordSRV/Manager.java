@@ -40,6 +40,7 @@ public class Manager {
     public Manager(Platform platform) {
         Manager.instance = this;
         this.platform = platform;
+        config = new Config();
 
         switch (platform.getClass().getSimpleName().replace("Platform", "").toLowerCase()) {
             // in order of least to most hated
@@ -52,7 +53,7 @@ public class Manager {
 
     public static final DecimalFormat decimalFormat = new DecimalFormat("#.#");
     public Map<String, TextChannel> channels = new HashMap<>();
-    public Config config = new Config();
+    public Config config;
     public List<String> hookedPlugins = new ArrayList<>();
     public JDA jda = null;
     public long startTime = System.currentTimeMillis();
