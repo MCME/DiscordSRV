@@ -97,6 +97,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
     public void onEnable() {
         instance = this;
 
+        // check if the person is trying to use the plugin on Thermos without updating to ASM5
         try {
             File specialSourceFile = new File("libraries/net/md-5/SpecialSource/1.7-SNAPSHOT/SpecialSource-1.7-SNAPSHOT.jar");
             if (specialSourceFile.exists() && DigestUtils.md5Hex(FileUtils.readFileToByteArray(specialSourceFile)).equalsIgnoreCase("096777a1b6098130d6c925f1c04050a3")) {
