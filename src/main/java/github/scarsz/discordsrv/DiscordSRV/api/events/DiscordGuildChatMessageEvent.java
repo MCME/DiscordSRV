@@ -42,4 +42,9 @@ public class DiscordGuildChatMessageEvent extends Event {
         return senderId;
     }
 
+    @Override
+    public void perform() {
+        super.perform();
+    }
+
 }

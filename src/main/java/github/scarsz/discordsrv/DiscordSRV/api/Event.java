@@ -1,5 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.api;
 
+import java.util.Arrays;
+
 /**
  * Made by Scarsz
  *
@@ -7,4 +9,10 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  * @on 11/22/2016
  * @at 3:18 PM
  */
-public abstract class Event extends Cancelable {}
+public abstract class Event extends Cancelable {
+
+    public void perform() {
+        System.out.println("Stack @ event perform: " + Arrays.toString(Thread.currentThread().getStackTrace()));
+    }
+
+}

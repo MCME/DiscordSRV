@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.api.PlayerEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
  * @in /dev/hell
  * @at 11/8/2016
  */
-public class GamePlayerJoinEvent extends PlayerEvent {
+public class GamePlayerJoinEvent extends GamePlayerEvent {
 
     private final String playerName;
     public String getPlayerName() {

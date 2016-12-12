@@ -7,7 +7,7 @@ package github.scarsz.discordsrv.DiscordSRV.api;
  * @on 11/25/2016
  * @at 10:26 PM
  */
-public abstract class PlayerEvent extends Event {
+public abstract class GamePlayerEvent extends Event {
 
     private String player;
     public String getPlayer() {

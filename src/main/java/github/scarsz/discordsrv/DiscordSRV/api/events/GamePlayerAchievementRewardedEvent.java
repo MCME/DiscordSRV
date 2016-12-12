@@ -4,23 +4,26 @@ import github.scarsz.discordsrv.DiscordSRV.Manager;
 import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Made by Scarsz
  *
  * @in /dev/hell
- * @at 11/8/2016
+ * @on 12/11/2016
+ * @at 3:19 PM
  */
-public class GamePlayerDeathEvent extends GamePlayerEvent {
+public class GamePlayerAchievementRewardedEvent extends GamePlayerEvent {
+
+    private final String achievement;
+    public String getAchievement() {
+        return achievement;
+    }
 
     private final String playerName;
     public String getPlayerName() {
         return playerName;
-    }
-
-    private final String message;
-    public String getMessage() {
-        return message;
     }
 
     private final String world;
@@ -28,15 +31,15 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
         return world;
     }
 
-    public GamePlayerDeathEvent(String playerName, String message, String world) {
+    public GamePlayerAchievementRewardedEvent(String achievement, String playerName, String world) {
+        this.achievement = achievement;
         this.playerName = playerName;
-        this.message = message;
         this.world = world;
     }
 
-    public static GamePlayerDeathEvent fromEvent(Object event) {
+    public static GamePlayerAchievementRewardedEvent fromEvent(Object event) {
+        String achievement = null;
         String playerName = null;
-        String message = null;
         String world = null;
 
         try {
@@ -45,10 +48,15 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
                     Object player = event.getClass().getMethod("getEntity").invoke(event);
                     playerName = (String) player.getClass().getMethod("getName").invoke(player);
 
-                    message = (String) event.getClass().getMethod("getDeathMessage").invoke(event);
-
                     Object worldObject = player.getClass().getMethod("getWorld").invoke(player);
                     world = (String) worldObject.getClass().getMethod("getName").invoke(worldObject);
+
+                    achievement = event.getClass().getMethod("getAchievement").invoke(event).getClass().getSimpleName().toLowerCase();
+                    List<String> achievementNameParts = new LinkedList<>();
+                    for (String s : achievement.split("_"))
+                        achievementNameParts.add(s.substring(0, 1).toUpperCase() + s.substring(1));
+                    achievement = String.join(" ", achievementNameParts);
+
                     break;
                 case BUNGEECORD:
                     //TODO
@@ -62,7 +70,7 @@ public class GamePlayerDeathEvent extends GamePlayerEvent {
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-        return new GamePlayerDeathEvent(playerName, message, world);
+        return new GamePlayerAchievementRewardedEvent(playerName, world, achievement);
     }
 
 }

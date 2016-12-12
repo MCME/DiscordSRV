@@ -156,7 +156,7 @@ public class BukkitPlatform extends JavaPlugin implements Platform, Listener {
 
     @Override
     public void onDisable() {
-
+        manager.shutdown();
     }
 
     private boolean checkIfPluginEnabled(String pluginName) {

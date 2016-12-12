@@ -1,7 +1,7 @@
 package github.scarsz.discordsrv.DiscordSRV.api.events;
 
 import github.scarsz.discordsrv.DiscordSRV.Manager;
-import github.scarsz.discordsrv.DiscordSRV.api.PlayerEvent;
+import github.scarsz.discordsrv.DiscordSRV.api.GamePlayerEvent;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -12,7 +12,7 @@ import java.lang.reflect.InvocationTargetException;
  * @on 11/25/2016
  * @at 10:16 PM
  */
-public class GamePlayerQuitEvent extends PlayerEvent {
+public class GamePlayerQuitEvent extends GamePlayerEvent {
 
     private final String playerName;
     public String getPlayerName() {

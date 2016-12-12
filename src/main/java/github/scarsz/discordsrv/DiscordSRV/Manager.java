@@ -160,9 +160,8 @@ public class Manager {
         channelTopicUpdater.interrupt();
 
         accountLinkManager.save();
-        config.save();
 
-        platform.info("done in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
+        platform.info("Shutdown completed in " + (System.currentTimeMillis() - shutdownStartTime) + "ms");
     }
 
     public void processEvent(Event event) {
@@ -197,7 +196,7 @@ public class Manager {
         if (event.isCanceled()) return;
 
         // perform event
-
+        event.perform();
     }
 
     public void addListener(DiscordSRVListener listener) {
@@ -223,4 +222,8 @@ public class Manager {
     public boolean chatChannelIsLinked(String channelName) {
         return channels.containsKey(channelName);
     }
+    public boolean discordChannelIsLinked(TextChannel channel) {
+        return channels.containsValue(channel);
+    }
+
 }
